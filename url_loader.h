@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include "string_buffer.h"
 
-bool get_web_page(char* url, StringBuffer* response);
+bool get_web_page(const char* url, StringBuffer* response);
 
 #endif	/* URL_LOADER_H */
 

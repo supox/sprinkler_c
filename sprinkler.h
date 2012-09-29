@@ -14,6 +14,10 @@
 #include "queue.h"
 
 typedef struct {
+    int id;
+    int refresh_rate;
+    int main_valf_delay;
+    int main_valf;
     size_t number_of_sensors;
     Sensor sensors[MAX_NUMBER_OF_SENSORS];
     Queue message_queues;

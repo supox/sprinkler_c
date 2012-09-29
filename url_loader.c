@@ -13,7 +13,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp) {
     return realsize;
 }
 
-bool get_web_page(char* url, StringBuffer* response ) {
+bool get_web_page(const char* url, StringBuffer* response ) {
     bool ret = false;
     CURLcode res;
     CURL *curl = curl_easy_init();

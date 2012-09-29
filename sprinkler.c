@@ -23,7 +23,7 @@ bool sprinkler_read_sensors(Sprinkler* s) {
 
 Sprinkler* sprinkler_create() {
     Sprinkler* sprinkler = malloc(sizeof (Sprinkler));
-    if(!sprinkler_initialize(sprinkler)) {
+    if (!sprinkler_initialize(sprinkler)) {
         add_to_log("Could not init sprinkler", ERROR);
         sprinkler_delete(sprinkler);
         return NULL;
@@ -38,6 +38,10 @@ void sprinkler_delete(Sprinkler* s) {
 
 bool sprinkler_initialize(Sprinkler* s) {
     int iSensorIndex;
+    s->id=0;
+    s->refresh_rate=DEFAULT_REFRESH_RATE;
+    s->main_valf_delay = 0;
+    s->main_valf = -1;
     s->number_of_sensors = 0;
     s->message_queues = CreateQueue(QUEUE_MAX_NUMBER_OF_ELEMENTS);
     for (iSensorIndex = 0; iSensorIndex < MAX_NUMBER_OF_SENSORS; iSensorIndex++) {
@@ -49,12 +53,21 @@ bool sprinkler_initialize(Sprinkler* s) {
 
 bool sprinkler_load_config(Sprinkler* s) {
     bool ret = false;
-    StringBuffer *sb = string_buffer_create();
-    ret = get_web_page(SENSORS_CONFIGURATION_URL, sb);
-    if(ret) {
-        ret = json_parse_sensors(sb->memory, s->sensors, &s->number_of_sensors, MAX_NUMBER_OF_SENSORS);
-    }
+    StringBuffer *sb1, *sb2;
+    sb1 = string_buffer_create();
+    sb2 = string_buffer_create();
     
-    string_buffer_delete(sb);
+    ret = get_web_page(SENSORS_CONFIGURATION_URL, sb1);
+    if (ret) {
+        ret = json_parse_sensors(sb1->memory, s->sensors, &s->number_of_sensors, MAX_NUMBER_OF_SENSORS);
+    }
+    if (ret) {
+        ret = get_web_page(SPRINKLER_CONFIGURATION_URL, sb2);
+    }
+    if (ret) {
+        ret = json_parse_sprinkler_configuration(sb2->memory, s);
+    }
+    string_buffer_delete(sb1);
+    string_buffer_delete(sb2);
     return ret;
 }
