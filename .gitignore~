@@ -1,0 +1,6 @@
+build/
+dist/
+tests/tests/
+*.o
+.dep.inc
+

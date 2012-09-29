@@ -31,13 +31,31 @@ Sensor* sensor_create() {
 }
 
 void sensor_init(Sensor* s) {
+    s->id=0;
     s->port_index=0;
     s->last_reading_value=0;
     s->last_reading_time=0;
-    s->type = MOCK;    
+    s->type = MOCK;
 }
 
 void sensor_delete(Sensor* s){
     free(s);
 }
 
+Sensor** sensor_create_array(const size_t length) {
+    Sensor** sa = (Sensor**)calloc(length, sizeof(Sensor*));
+    if(sa) {
+        int i;
+        for(i=0; i<length;i++)
+            sa[i] = sensor_create();
+    }
+    return sa;
+
+}
+
+void sensor_delete_array(Sensor** sensors, const size_t length) {
+    int i;
+    for(i=0; i<length; i++)
+        sensor_delete(sensors[i]);
+    free(sensors);
+}

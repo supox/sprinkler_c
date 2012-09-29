@@ -14,7 +14,7 @@
 #include "queue.h"
 
 typedef struct {
-    int number_of_sensors;
+    size_t number_of_sensors;
     Sensor sensors[MAX_NUMBER_OF_SENSORS];
     Queue message_queues;
     
@@ -22,9 +22,8 @@ typedef struct {
 } Sprinkler;
 
 bool sprinkler_read_sensors(Sprinkler* s);
-bool sprinkler_load_config(Sprinkler* s);
 
-void sprinkler_initialize(Sprinkler* s);
+bool sprinkler_initialize(Sprinkler* s);
 Sprinkler* sprinkler_create();
 void sprinkler_delete(Sprinkler* s);
 

@@ -18,6 +18,14 @@
       <itemPath>string_buffer.h</itemPath>
       <itemPath>url_loader.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="f1" displayName="Json" projectFiles="true" kind="ROOT">
+      <itemPath>jsmn.c</itemPath>
+      <itemPath>jsmn.h</itemPath>
+      <itemPath>json_parser.c</itemPath>
+      <itemPath>json_parser.h</itemPath>
+      <itemPath>key_value_pair.c</itemPath>
+      <itemPath>key_value_pair.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
@@ -46,6 +54,12 @@
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/check_communication.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f8"
+                     displayName="Check Json Parser"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/check_json_parser.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1"
                      displayName="Check Logger"
@@ -82,6 +96,12 @@
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/test_sensor.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f9"
+                     displayName="Test Sprinkler"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/test_sprinkler.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -208,6 +228,36 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f7</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f8">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f8</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f9">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f9</output>
         </linkerTool>
       </folder>
     </conf>

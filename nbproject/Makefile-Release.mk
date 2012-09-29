@@ -39,12 +39,15 @@ OBJECTFILES= \
 	${OBJECTDIR}/url_loader.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/message_type.o \
+	${OBJECTDIR}/jsmn.o \
 	${OBJECTDIR}/communication.o \
 	${OBJECTDIR}/sensor_type.o \
 	${OBJECTDIR}/queue.o \
 	${OBJECTDIR}/StringBuffer.o \
+	${OBJECTDIR}/key_value_pair.o \
 	${OBJECTDIR}/sensor.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/json_parser.o \
 	${OBJECTDIR}/sprinkler.o
 
 # Test Directory
@@ -52,6 +55,8 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
@@ -104,6 +109,11 @@ ${OBJECTDIR}/message_type.o: message_type.c
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/message_type.o message_type.c
 
+${OBJECTDIR}/jsmn.o: jsmn.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/jsmn.o jsmn.c
+
 ${OBJECTDIR}/communication.o: communication.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -124,6 +134,11 @@ ${OBJECTDIR}/StringBuffer.o: StringBuffer.c
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringBuffer.o StringBuffer.c
 
+${OBJECTDIR}/key_value_pair.o: key_value_pair.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/key_value_pair.o key_value_pair.c
+
 ${OBJECTDIR}/sensor.o: sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -133,6 +148,11 @@ ${OBJECTDIR}/main.o: main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+
+${OBJECTDIR}/json_parser.o: json_parser.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_parser.o json_parser.c
 
 ${OBJECTDIR}/sprinkler.o: sprinkler.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -145,6 +165,10 @@ ${OBJECTDIR}/sprinkler.o: sprinkler.c
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/check_communication.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
+
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/check_json_parser.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
 
@@ -172,11 +196,21 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/test_sens
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/test_sprinkler.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
+
 
 ${TESTDIR}/tests/check_communication.o: tests/check_communication.c 
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/check_communication.o tests/check_communication.c
+
+
+${TESTDIR}/tests/check_json_parser.o: tests/check_json_parser.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/check_json_parser.o tests/check_json_parser.c
 
 
 ${TESTDIR}/tests/checklogger.o: tests/checklogger.c 
@@ -213,6 +247,12 @@ ${TESTDIR}/tests/test_sensor.o: tests/test_sensor.c
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_sensor.o tests/test_sensor.c
+
+
+${TESTDIR}/tests/test_sprinkler.o: tests/test_sprinkler.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_sprinkler.o tests/test_sprinkler.c
 
 
 ${OBJECTDIR}/json_formatter_nomain.o: ${OBJECTDIR}/json_formatter.o json_formatter.c 
@@ -267,6 +307,19 @@ ${OBJECTDIR}/message_type_nomain.o: ${OBJECTDIR}/message_type.o message_type.c
 	    ${CP} ${OBJECTDIR}/message_type.o ${OBJECTDIR}/message_type_nomain.o;\
 	fi
 
+${OBJECTDIR}/jsmn_nomain.o: ${OBJECTDIR}/jsmn.o jsmn.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/jsmn.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/jsmn_nomain.o jsmn.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/jsmn.o ${OBJECTDIR}/jsmn_nomain.o;\
+	fi
+
 ${OBJECTDIR}/communication_nomain.o: ${OBJECTDIR}/communication.o communication.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/communication.o`; \
@@ -319,6 +372,19 @@ ${OBJECTDIR}/StringBuffer_nomain.o: ${OBJECTDIR}/StringBuffer.o StringBuffer.c
 	    ${CP} ${OBJECTDIR}/StringBuffer.o ${OBJECTDIR}/StringBuffer_nomain.o;\
 	fi
 
+${OBJECTDIR}/key_value_pair_nomain.o: ${OBJECTDIR}/key_value_pair.o key_value_pair.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/key_value_pair.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/key_value_pair_nomain.o key_value_pair.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/key_value_pair.o ${OBJECTDIR}/key_value_pair_nomain.o;\
+	fi
+
 ${OBJECTDIR}/sensor_nomain.o: ${OBJECTDIR}/sensor.o sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/sensor.o`; \
@@ -345,6 +411,19 @@ ${OBJECTDIR}/main_nomain.o: ${OBJECTDIR}/main.o main.c
 	    ${CP} ${OBJECTDIR}/main.o ${OBJECTDIR}/main_nomain.o;\
 	fi
 
+${OBJECTDIR}/json_parser_nomain.o: ${OBJECTDIR}/json_parser.o json_parser.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/json_parser.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_parser_nomain.o json_parser.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/json_parser.o ${OBJECTDIR}/json_parser_nomain.o;\
+	fi
+
 ${OBJECTDIR}/sprinkler_nomain.o: ${OBJECTDIR}/sprinkler.o sprinkler.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/sprinkler.o`; \
@@ -362,6 +441,8 @@ ${OBJECTDIR}/sprinkler_nomain.o: ${OBJECTDIR}/sprinkler.o sprinkler.c
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
