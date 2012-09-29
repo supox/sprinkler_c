@@ -1,43 +1,51 @@
 #include "sprinkler.h"
+#include "logger.h"
+#include "string_buffer.h"
+#include "url_loader.h"
+#include <curl/curl.h>
+
 #include <stdlib.h>
-
-struct SprinklerStruct {
-    int number_of_sensors;
-    Sensor* sensors[MAX_NUMBER_OF_SENSORS];
-    Queue message_queues;
-    
-    // TODO - add valves
-};
-
+#include <stdio.h>
+#include <memory.h>
 
 bool sprinkler_read_sensors(Sprinkler* s) {
-    return false;
-}
-
-bool sprinkler_get_messages(Sprinkler* s, char*** messages, int* number_of_messages) {
-    return false;
-}
-
-bool sprinkler_clear_messages() {
-    return false;
+    bool ret = true;
+    int iSensorIndex;
+    for (iSensorIndex = 0; iSensorIndex < s->number_of_sensors; iSensorIndex++) {
+        double value;
+        ret &= sensor_get_reading(&s->sensors[iSensorIndex], &value);
+    }
+    return ret;
 }
 
 Sprinkler* sprinkler_create() {
-    int iSensorIndex;
-    Sprinkler* sprinkler = malloc(sizeof(Sprinkler));
-    
-    sprinkler->number_of_sensors = 0;
-    sprinkler->message_queues = CreateQueue(QUEUE_MAX_NUMBER_OF_ELEMENTS);
-    for(iSensorIndex = 0 ; iSensorIndex < MAX_NUMBER_OF_SENSORS ; iSensorIndex) {
-        sprinkler->sensors[iSensorIndex] = sensor_create();
-    }
+    Sprinkler* sprinkler = malloc(sizeof (Sprinkler));
+    sprinkler_initialize(sprinkler);
+
     return sprinkler;
-    
 }
-void sprinkler_delete(Sprinkler* sprinkler) {
+
+void sprinkler_delete(Sprinkler* s) {
+    free(s);
+}
+
+void sprinkler_initialize(Sprinkler* s) {
     int iSensorIndex;
-    for(iSensorIndex = 0 ; iSensorIndex < MAX_NUMBER_OF_SENSORS ; iSensorIndex) {
-        sensor_delete(sprinkler->sensors[iSensorIndex]);
+    s->number_of_sensors = 0;
+    s->message_queues = CreateQueue(QUEUE_MAX_NUMBER_OF_ELEMENTS);
+    for (iSensorIndex = 0; iSensorIndex < MAX_NUMBER_OF_SENSORS; iSensorIndex++) {
+        sensor_init(&s->sensors[iSensorIndex]);
     }
-    free(sprinkler);
+
+    sprinkler_load_config(s);
+}
+
+bool sprinkler_load_config(Sprinkler* s) {
+    bool ret = false;
+    StringBuffer sb;
+    ret = get_web_page(SERVER_URL, &sb);
+    if(ret) {
+        // TODO - Parse response
+    }
+    return ret;
 }

@@ -30,6 +30,9 @@ int IsFull(Queue Q) {
   return Q->Size == Q->Capacity;
 }
 
+int Count(Queue Q) {
+    return Q->Size;
+}
 Queue CreateQueue(int MaxElements) {
   Queue Q;
 
@@ -75,7 +78,7 @@ static int Succ(int Value, Queue Q) {
   return Value;
 }
 
-void Enqueue(ElementType X, Queue Q) {
+void Enqueue(Queue Q, ElementType X) {
 
   if (IsFull(Q)) {
     Error("Enqueue Error: The queue is full.");

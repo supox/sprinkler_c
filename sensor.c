@@ -11,23 +11,32 @@ bool sensor_get_reading(Sensor* s, double* value)
         case MOCK:
              // generate a number between 1 to 10
             *value = (double)(rand() % 10 + 1);
-            return true;
             break;
         default:
             // TODO !!!
+            return false;
             break;
     }
-    return false;    
+    
+    s->last_reading_time = time(0);
+    s->last_reading_value = *value;
+    
+    return true;
 }
 
 Sensor* sensor_create() {
     Sensor* s = (Sensor*)malloc(sizeof(Sensor));
+    sensor_init(s);
+    return s;
+}
+
+void sensor_init(Sensor* s) {
     s->port_index=0;
     s->last_reading_value=0;
     s->last_reading_time=0;
-    s->type = MOCK;
-    return s;
+    s->type = MOCK;    
 }
+
 void sensor_delete(Sensor* s){
     free(s);
 }

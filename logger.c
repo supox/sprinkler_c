@@ -48,6 +48,9 @@ void add_to_log(char* message, enum logger_level level) {
     
     t= time(0);
     fprintf(logger_handle, "%u %s : %s\n", (unsigned)t, logger_level_str, message);
+    
+    if(level == DUMP) // Log to console :
+        printf("%u %s : %s\n", (unsigned)t, logger_level_str, message);
 }
 
 void logger_set_dump_mode(bool dump_mode) {

@@ -28,9 +28,14 @@ bool comm_recieve_byte(CommunicationDescriptor* comm, char* byte) {
 }
 
 CommunicationDescriptor* comm_create() {
-    CommunicationDescriptor* comm;
-    comm = (CommunicationDescriptor*) malloc (sizeof(CommunicationDescriptor));
+    CommunicationDescriptor* comm = (CommunicationDescriptor*) malloc (sizeof(CommunicationDescriptor));
+    if(comm)
+        comm_init(comm);
     return comm;
+}
+
+void comm_init(CommunicationDescriptor* comm) {
+    comm->state = 0;
 }
 
 void comm_delete(CommunicationDescriptor* comm) {

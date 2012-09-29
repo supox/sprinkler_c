@@ -18,6 +18,6 @@ typedef struct
     enum message_type type;
     time_t event_time;
     int value;
-} MessageDescriptor;
+} MessageDescriptor ;
 
 #endif	/* MESSAGE_DESCRIPTOR_H */

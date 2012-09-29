@@ -21,6 +21,7 @@ bool comm_recieve_buffer(CommunicationDescriptor* comm, char* buffer, size_t max
 bool comm_recieve_byte(CommunicationDescriptor* comm, char* byte);
 
 CommunicationDescriptor* comm_create();
+void comm_init(CommunicationDescriptor* comm);
 void comm_delete(CommunicationDescriptor* comm);
 
 #endif	/* COMMUNICATION_H */

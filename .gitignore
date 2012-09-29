@@ -2,4 +2,6 @@ build/
 dist/
 tests/tests/
 *.o
+.dep.inc
+log.txt
 

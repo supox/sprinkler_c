@@ -25,6 +25,7 @@ typedef struct {
 bool sensor_get_reading(Sensor* s, double* value);
 
 Sensor* sensor_create();
+void sensor_init(Sensor* s);
 void sensor_delete(Sensor*);
 
 #endif	/* SENSOR_H */

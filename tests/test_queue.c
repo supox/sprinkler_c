@@ -41,7 +41,7 @@ void test1() {
     assert(!IsFull(q));
     
     // check enqueue
-    Enqueue(message1,q);
+    Enqueue(q, message1);
     assert(!IsEmpty(q));
     assert(!IsFull(q));
     
@@ -58,12 +58,54 @@ void test1() {
     assert(!IsFull(q));
   
     // check make empty
-    Enqueue(message1,q);
+    Enqueue(q, message1);
     MakeEmpty(q);
     assert(IsEmpty(q));
     assert(!IsFull(q));
     
     DisposeQueue(q);
+}
+
+void test2() {
+    const int MaxElements = 10;
+    int iIndex;
+    MessageDescriptor messages[MaxElements];
+    Queue q = CreateQueue(MaxElements);
+
+    assert(q);
+
+    assert(IsEmpty(q));
+    assert(!IsFull(q));
+
+    for(iIndex = 0 ; iIndex < MaxElements ; iIndex++)
+    {
+        assert(!IsFull(q));
+        
+        messages[iIndex].event_time = iIndex;
+        messages[iIndex].id = iIndex;
+        messages[iIndex].type=SENSOR_READING;
+        messages[iIndex].value=iIndex;
+        
+        // check enqueue
+        Enqueue(q,messages[iIndex]);
+    }
+    
+    assert(!IsEmpty(q));
+    assert(IsFull(q));
+    assert(Count(q)==MaxElements);
+
+
+    for(iIndex = 0 ; iIndex < MaxElements ; iIndex++)
+    {
+        MessageDescriptor message = Dequeue(q);
+        assert(AreEqual(&message,&messages[iIndex]));
+    }
+    
+    assert(IsEmpty(q));
+    assert(!IsFull(q));
+    
+    DisposeQueue(q);
+    
 }
 
 int main(int argc, char** argv) {
@@ -73,6 +115,10 @@ int main(int argc, char** argv) {
     printf("%%TEST_STARTED%% test1 (test_queue)\n");
     test1();
     printf("%%TEST_FINISHED%% time=0 test1 (test_queue) \n");
+
+    printf("%%TEST_STARTED%% test2 (test_queue)\n");
+    test2();
+    printf("%%TEST_FINISHED%% time=0 test2 (test_queue) \n");
 
     printf("%%SUITE_FINISHED%% time=0\n");
 

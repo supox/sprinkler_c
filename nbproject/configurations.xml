@@ -6,6 +6,8 @@
                    projectFiles="true">
       <itemPath>communication.h</itemPath>
       <itemPath>config.h</itemPath>
+      <itemPath>curl_wrapper.h</itemPath>
+      <itemPath>json_formatter.h</itemPath>
       <itemPath>logger.h</itemPath>
       <itemPath>message_descriptor.h</itemPath>
       <itemPath>message_type.h</itemPath>
@@ -13,6 +15,8 @@
       <itemPath>sensor.h</itemPath>
       <itemPath>sensor_type.h</itemPath>
       <itemPath>sprinkler.h</itemPath>
+      <itemPath>string_buffer.h</itemPath>
+      <itemPath>url_loader.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -21,7 +25,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>StringBuffer.c</itemPath>
       <itemPath>communication.c</itemPath>
+      <itemPath>json_formatter.c</itemPath>
       <itemPath>logger.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>message_type.c</itemPath>
@@ -29,6 +35,7 @@
       <itemPath>sensor.c</itemPath>
       <itemPath>sensor_type.c</itemPath>
       <itemPath>sprinkler.c</itemPath>
+      <itemPath>url_loader.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -45,6 +52,24 @@
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/checklogger.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f7"
+                     displayName="Check URL Loader"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/check_url_loader.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6"
+                     displayName="StringBuffer test"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/string_buffer_test.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5"
+                     displayName="Test JSON formatter"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/test_json_formatter.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f3"
                      displayName="Test Queue"
@@ -74,6 +99,11 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibLibItem>curl</linkerLibLibItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
         <cTool>
@@ -135,6 +165,51 @@
           <output>${TESTDIR}/TestFiles/f4</output>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f5">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f5</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f6">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f6</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f7">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f7</output>
+        </linkerTool>
+      </folder>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -154,6 +229,14 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <linkerAddLib>
+            <pElem>libcurl</pElem>
+          </linkerAddLib>
+          <linkerLibItems>
+            <linkerLibLibItem>curl</linkerLibLibItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
     </conf>
   </confs>

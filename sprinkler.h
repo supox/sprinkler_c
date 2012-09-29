@@ -13,15 +13,20 @@
 #include "sensor.h"
 #include "queue.h"
 
-struct SprinklerStruct;
-typedef struct SprinklerStruct Sprinkler;
+typedef struct {
+    int number_of_sensors;
+    Sensor sensors[MAX_NUMBER_OF_SENSORS];
+    Queue message_queues;
+    
+    // TODO - add valves
+} Sprinkler;
 
 bool sprinkler_read_sensors(Sprinkler* s);
-bool sprinkler_get_messages(Sprinkler* s, char*** messages, int* number_of_messages);
-bool sprinkler_clear_messages();
+bool sprinkler_load_config(Sprinkler* s);
 
+void sprinkler_initialize(Sprinkler* s);
 Sprinkler* sprinkler_create();
-void sprinkler_delete();
+void sprinkler_delete(Sprinkler* s);
 
 #endif	/* SPRINKLER_H */
 

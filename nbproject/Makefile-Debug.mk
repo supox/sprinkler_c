@@ -35,11 +35,14 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/json_formatter.o \
+	${OBJECTDIR}/url_loader.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/message_type.o \
 	${OBJECTDIR}/communication.o \
 	${OBJECTDIR}/sensor_type.o \
 	${OBJECTDIR}/queue.o \
+	${OBJECTDIR}/StringBuffer.o \
 	${OBJECTDIR}/sensor.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/sprinkler.o
@@ -51,6 +54,9 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 TESTFILES= \
 	${TESTDIR}/TestFiles/f2 \
 	${TESTDIR}/TestFiles/f1 \
+	${TESTDIR}/TestFiles/f7 \
+	${TESTDIR}/TestFiles/f6 \
+	${TESTDIR}/TestFiles/f5 \
 	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f4
 
@@ -68,7 +74,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-lcurl
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -77,6 +83,16 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/json_formatter.o: json_formatter.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_formatter.o json_formatter.c
+
+${OBJECTDIR}/url_loader.o: url_loader.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/url_loader.o url_loader.c
 
 ${OBJECTDIR}/logger.o: logger.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -102,6 +118,11 @@ ${OBJECTDIR}/queue.o: queue.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/queue.o queue.c
+
+${OBJECTDIR}/StringBuffer.o: StringBuffer.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringBuffer.o StringBuffer.c
 
 ${OBJECTDIR}/sensor.o: sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -131,6 +152,18 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/checklogger.o ${OBJECTFILES:%.o=%_noma
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.c}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} 
 
+${TESTDIR}/TestFiles/f7: ${TESTDIR}/tests/check_url_loader.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c}   -o ${TESTDIR}/TestFiles/f7 $^ ${LDLIBSOPTIONS} 
+
+${TESTDIR}/TestFiles/f6: ${TESTDIR}/tests/string_buffer_test.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c}   -o ${TESTDIR}/TestFiles/f6 $^ ${LDLIBSOPTIONS} 
+
+${TESTDIR}/TestFiles/f5: ${TESTDIR}/tests/test_json_formatter.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c}   -o ${TESTDIR}/TestFiles/f5 $^ ${LDLIBSOPTIONS} 
+
 ${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/test_queue.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.c}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} 
@@ -152,6 +185,24 @@ ${TESTDIR}/tests/checklogger.o: tests/checklogger.c
 	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/checklogger.o tests/checklogger.c
 
 
+${TESTDIR}/tests/check_url_loader.o: tests/check_url_loader.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/check_url_loader.o tests/check_url_loader.c
+
+
+${TESTDIR}/tests/string_buffer_test.o: tests/string_buffer_test.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/string_buffer_test.o tests/string_buffer_test.c
+
+
+${TESTDIR}/tests/test_json_formatter.o: tests/test_json_formatter.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_json_formatter.o tests/test_json_formatter.c
+
+
 ${TESTDIR}/tests/test_queue.o: tests/test_queue.c 
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
@@ -163,6 +214,32 @@ ${TESTDIR}/tests/test_sensor.o: tests/test_sensor.c
 	${RM} $@.d
 	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_sensor.o tests/test_sensor.c
 
+
+${OBJECTDIR}/json_formatter_nomain.o: ${OBJECTDIR}/json_formatter.o json_formatter.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/json_formatter.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_formatter_nomain.o json_formatter.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/json_formatter.o ${OBJECTDIR}/json_formatter_nomain.o;\
+	fi
+
+${OBJECTDIR}/url_loader_nomain.o: ${OBJECTDIR}/url_loader.o url_loader.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/url_loader.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/url_loader_nomain.o url_loader.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/url_loader.o ${OBJECTDIR}/url_loader_nomain.o;\
+	fi
 
 ${OBJECTDIR}/logger_nomain.o: ${OBJECTDIR}/logger.o logger.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -229,6 +306,19 @@ ${OBJECTDIR}/queue_nomain.o: ${OBJECTDIR}/queue.o queue.c
 	    ${CP} ${OBJECTDIR}/queue.o ${OBJECTDIR}/queue_nomain.o;\
 	fi
 
+${OBJECTDIR}/StringBuffer_nomain.o: ${OBJECTDIR}/StringBuffer.o StringBuffer.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/StringBuffer.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringBuffer_nomain.o StringBuffer.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/StringBuffer.o ${OBJECTDIR}/StringBuffer_nomain.o;\
+	fi
+
 ${OBJECTDIR}/sensor_nomain.o: ${OBJECTDIR}/sensor.o sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/sensor.o`; \
@@ -274,6 +364,9 @@ ${OBJECTDIR}/sprinkler_nomain.o: ${OBJECTDIR}/sprinkler.o sprinkler.c
 	then  \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
+	    ${TESTDIR}/TestFiles/f7 || true; \
+	    ${TESTDIR}/TestFiles/f6 || true; \
+	    ${TESTDIR}/TestFiles/f5 || true; \
 	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f4 || true; \
 	else  \
