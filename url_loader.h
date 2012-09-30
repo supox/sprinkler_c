@@ -9,9 +9,11 @@
 #define	URL_LOADER_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 #include "string_buffer.h"
 
 bool get_web_page(const char* url, StringBuffer* response);
+bool post_web_page(const char* url, StringBuffer* request, StringBuffer* response );
 
 #endif	/* URL_LOADER_H */
 

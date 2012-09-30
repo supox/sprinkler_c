@@ -13,9 +13,11 @@
 typedef struct {
     char *memory;
     size_t size;
+    size_t pos;
 } StringBuffer;
 
-void string_buffer_write(StringBuffer* sb, const char* s, const size_t size);
+size_t string_buffer_write(StringBuffer* sb, const char* s, const size_t size);
+size_t string_buffer_read(StringBuffer* sb, char* s, const size_t size);
 
 StringBuffer* string_buffer_create();
 void string_buffer_init(StringBuffer* sb);

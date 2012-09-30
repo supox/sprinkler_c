@@ -18,7 +18,7 @@
       <itemPath>string_buffer.h</itemPath>
       <itemPath>url_loader.h</itemPath>
     </logicalFolder>
-    <logicalFolder name="f1" displayName="Json" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f1" displayName="Json" projectFiles="true">
       <itemPath>jsmn.c</itemPath>
       <itemPath>jsmn.h</itemPath>
       <itemPath>json_parser.c</itemPath>
