@@ -12,7 +12,8 @@ enum AlarmType {
     EQUAL,
     NOT_EQUAL,
     GREATER_THAN,
-    LESS_THAN
+    LESS_THAN,
+    INVALID
 };
 
 #endif	/* ALARM_TYPE_H */

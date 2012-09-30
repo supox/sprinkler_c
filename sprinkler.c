@@ -11,10 +11,13 @@ static bool sprinkler_load_config(Sprinkler* s);
 
 bool sprinkler_read_sensors(Sprinkler* s) {
     bool ret = true;
+    bool need_to_report = false;
     size_t iSensorIndex;
     for (iSensorIndex = 0; iSensorIndex < s->number_of_sensors; iSensorIndex++) {
+        bool will_alarm = false;
         double value = 0;
-        ret &= sensor_get_reading(&s->sensors[iSensorIndex], &value);
+        ret &= sensor_get_reading(&s->sensors[iSensorIndex], &value, &will_alarm);
+        need_to_report |= will_alarm;
     }
     return ret;
 }
@@ -45,7 +48,7 @@ bool sprinkler_initialize(Sprinkler* s) {
     s->number_of_sensors = 0;
     s->last_report_time = 0;
     for (iSensorIndex = 0; iSensorIndex < MAX_NUMBER_OF_SENSORS; iSensorIndex++) {
-        sensor_init(&s->sensors[iSensorIndex], MOCK);
+        sensor_init(&(s->sensors[iSensorIndex]), MOCK);
     }
 
     return sprinkler_load_config(s);

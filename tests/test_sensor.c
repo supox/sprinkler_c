@@ -16,12 +16,13 @@
 void test1() {
     Sensor* s;
     double value=-1;
+    bool will_alarm = false;
     printf("test_sensor test 1\n");
     
     s = sensor_create();
     assert(s);
     
-    assert(sensor_get_reading(s, &value));
+    assert(sensor_get_reading(s, &value, &will_alarm));
     assert(value!=-1);
 
     sensor_delete(s);
