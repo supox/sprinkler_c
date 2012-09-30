@@ -34,7 +34,7 @@ void test1() {
     message1.type=SENSOR_READING;
     message1.value=5;
     
-    Queue q = CreateQueue(MaxElements);
+    Queue q = queue_create(MaxElements);
     assert(q);
     
     assert(IsEmpty(q));
@@ -63,14 +63,14 @@ void test1() {
     assert(IsEmpty(q));
     assert(!IsFull(q));
     
-    DisposeQueue(q);
+    queue_delete(q);
 }
 
 void test2() {
     const int MaxElements = 10;
     int iIndex;
     MessageDescriptor messages[MaxElements];
-    Queue q = CreateQueue(MaxElements);
+    Queue q = queue_create(MaxElements);
 
     assert(q);
 
@@ -104,7 +104,7 @@ void test2() {
     assert(IsEmpty(q));
     assert(!IsFull(q));
     
-    DisposeQueue(q);
+    queue_delete(q);
     
 }
 

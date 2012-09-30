@@ -6,13 +6,13 @@
 // This implementation is just read and write to the cout.
 
 bool comm_send_buffer(CommunicationDescriptor* comm, const char* buffer) {
-    time_t t = time(0);
+    time_t t = time(NULL);
     printf("%u : %s\n", (unsigned) t, buffer);
     return true;
 }
 
 bool comm_send_byte(CommunicationDescriptor* comm, const char byte) {
-    time_t t = time(0);
+    time_t t = time(NULL);
     printf("%u : %c\n", (unsigned) t, byte);
     return true;
 }

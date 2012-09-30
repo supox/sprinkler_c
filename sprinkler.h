@@ -13,19 +13,24 @@
 #include "sensor.h"
 #include "queue.h"
 
+#include <time.h>
+
 typedef struct {
     int id;
     int refresh_rate;
     int main_valf_delay;
     int main_valf;
     size_t number_of_sensors;
+    time_t last_report_time;
     Sensor sensors[MAX_NUMBER_OF_SENSORS];
-    Queue message_queues;
+    // Queue message_queues;
     
     // TODO - add valves
 } Sprinkler;
 
 bool sprinkler_read_sensors(Sprinkler* s);
+bool sprinkler_report_reading(Sprinkler *s);
+bool sprinkler_needs_to_report_reading(Sprinkler *s);
 
 bool sprinkler_initialize(Sprinkler* s);
 Sprinkler* sprinkler_create();

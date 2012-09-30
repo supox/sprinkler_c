@@ -20,15 +20,15 @@ void test_json_parse_sensors() {
     int ports[]={1,2,5,6,8};
     int i;
     const char* json_buffer = "{\"sensors\":[{\"id\":1,\"port_index\":1},{\"id\":2,\"port_index\":2},{\"id\":5,\"port_index\":5},{\"id\":4,\"port_index\":6},{\"id\":6,\"port_index\":8}],\"alarms\":[{\"port_index\":1,\"alarm_value\":5.0,\"condition_type\":\"greater_than\"},{\"port_index\":1,\"alarm_value\":3.0,\"condition_type\":\"not_equal\"},{\"port_index\":1,\"alarm_value\":80.0,\"condition_type\":\"greater_than\"}]}\n";
-    Sensor** pSensors = sensor_create_array(MAX_NUMBER_OF_SENSORS);
+    Sensor pSensors[MAX_NUMBER_OF_SENSORS];
     size_t iSensorsLength = 0;
     
     bool result = json_parse_sensors(json_buffer, pSensors, &iSensorsLength, MAX_NUMBER_OF_SENSORS);
     assert(result);
     assert(iSensorsLength == 5);
     for(i=0; i<iSensorsLength; i++) {
-        assert(pSensors[i]->port_index==ports[i]);
-        assert(pSensors[i]->id==ids[i]);
+        assert(pSensors[i].port_index==ports[i]);
+        assert(pSensors[i].id==ids[i]);
     }
 }
 

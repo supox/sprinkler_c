@@ -42,7 +42,7 @@ bool json_parse_sprinkler_configuration(const char* json_buffer, Sprinkler* spri
     for (iCurrentTokenIndex = 1;
             iCurrentTokenIndex < tokens[0].size + 1 &&
             tokens[iCurrentTokenIndex].start > tokens[0].start && 
-            tokens[iCurrentTokenIndex].start < tokens[0].end;
+            tokens[iCurrentTokenIndex].end < tokens[0].end;
             ) {
 
         // Lets find out what to do with the key-
@@ -103,7 +103,7 @@ bool json_parse_sensors(const char* json_buffer, Sensor sensors[], size_t* iSens
                 break;
 
             // Read the value
-            if (token_to_int(json_buffer, &tokens[iCurrentTokenIndex + 1], &value))
+            if (!token_to_int(json_buffer, &tokens[iCurrentTokenIndex + 1], &value))
                 break;
 
             if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], ID_TAG)) { // Id tag

@@ -7,13 +7,10 @@
       <itemPath>communication.h</itemPath>
       <itemPath>config.h</itemPath>
       <itemPath>curl_wrapper.h</itemPath>
-      <itemPath>json_formatter.h</itemPath>
       <itemPath>logger.h</itemPath>
       <itemPath>message_descriptor.h</itemPath>
       <itemPath>message_type.h</itemPath>
       <itemPath>queue.h</itemPath>
-      <itemPath>sensor.h</itemPath>
-      <itemPath>sensor_type.h</itemPath>
       <itemPath>sprinkler.h</itemPath>
       <itemPath>string_buffer.h</itemPath>
       <itemPath>url_loader.h</itemPath>
@@ -21,27 +18,38 @@
     <logicalFolder name="f1" displayName="Json" projectFiles="true">
       <itemPath>jsmn.c</itemPath>
       <itemPath>jsmn.h</itemPath>
+      <itemPath>json_formatter.c</itemPath>
+      <itemPath>json_formatter.h</itemPath>
       <itemPath>json_parser.c</itemPath>
       <itemPath>json_parser.h</itemPath>
-      <itemPath>key_value_pair.c</itemPath>
-      <itemPath>key_value_pair.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="f2" displayName="Sensors" projectFiles="true">
+      <itemPath>battery_sensor.c</itemPath>
+      <itemPath>battery_sensor.h</itemPath>
+      <itemPath>mock_sensor.c</itemPath>
+      <itemPath>mock_sensor.h</itemPath>
+      <itemPath>sensor.c</itemPath>
+      <itemPath>sensor.h</itemPath>
+      <itemPath>sensor_factory.c</itemPath>
+      <itemPath>sensor_factory.h</itemPath>
+      <itemPath>sensor_type.c</itemPath>
+      <itemPath>sensor_type.h</itemPath>
+      <itemPath>water_sensor.c</itemPath>
+      <itemPath>water_sensor.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>StringBuffer.c</itemPath>
       <itemPath>communication.c</itemPath>
-      <itemPath>json_formatter.c</itemPath>
       <itemPath>logger.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>message_type.c</itemPath>
       <itemPath>queue.c</itemPath>
-      <itemPath>sensor.c</itemPath>
-      <itemPath>sensor_type.c</itemPath>
       <itemPath>sprinkler.c</itemPath>
       <itemPath>url_loader.c</itemPath>
     </logicalFolder>

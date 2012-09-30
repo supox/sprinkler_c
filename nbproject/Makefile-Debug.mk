@@ -35,7 +35,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/sensor_factory.o \
 	${OBJECTDIR}/json_formatter.o \
+	${OBJECTDIR}/water_sensor.o \
 	${OBJECTDIR}/url_loader.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/message_type.o \
@@ -44,7 +46,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/sensor_type.o \
 	${OBJECTDIR}/queue.o \
 	${OBJECTDIR}/StringBuffer.o \
-	${OBJECTDIR}/key_value_pair.o \
+	${OBJECTDIR}/mock_sensor.o \
+	${OBJECTDIR}/battery_sensor.o \
 	${OBJECTDIR}/sensor.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/json_parser.o \
@@ -89,10 +92,20 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/sensor_factory.o: sensor_factory.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sensor_factory.o sensor_factory.c
+
 ${OBJECTDIR}/json_formatter.o: json_formatter.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_formatter.o json_formatter.c
+
+${OBJECTDIR}/water_sensor.o: water_sensor.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/water_sensor.o water_sensor.c
 
 ${OBJECTDIR}/url_loader.o: url_loader.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -134,10 +147,15 @@ ${OBJECTDIR}/StringBuffer.o: StringBuffer.c
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringBuffer.o StringBuffer.c
 
-${OBJECTDIR}/key_value_pair.o: key_value_pair.c 
+${OBJECTDIR}/mock_sensor.o: mock_sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/key_value_pair.o key_value_pair.c
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/mock_sensor.o mock_sensor.c
+
+${OBJECTDIR}/battery_sensor.o: battery_sensor.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/battery_sensor.o battery_sensor.c
 
 ${OBJECTDIR}/sensor.o: sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -255,6 +273,19 @@ ${TESTDIR}/tests/test_sprinkler.o: tests/test_sprinkler.c
 	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_sprinkler.o tests/test_sprinkler.c
 
 
+${OBJECTDIR}/sensor_factory_nomain.o: ${OBJECTDIR}/sensor_factory.o sensor_factory.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/sensor_factory.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/sensor_factory_nomain.o sensor_factory.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/sensor_factory.o ${OBJECTDIR}/sensor_factory_nomain.o;\
+	fi
+
 ${OBJECTDIR}/json_formatter_nomain.o: ${OBJECTDIR}/json_formatter.o json_formatter.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/json_formatter.o`; \
@@ -266,6 +297,19 @@ ${OBJECTDIR}/json_formatter_nomain.o: ${OBJECTDIR}/json_formatter.o json_formatt
 	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_formatter_nomain.o json_formatter.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/json_formatter.o ${OBJECTDIR}/json_formatter_nomain.o;\
+	fi
+
+${OBJECTDIR}/water_sensor_nomain.o: ${OBJECTDIR}/water_sensor.o water_sensor.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/water_sensor.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/water_sensor_nomain.o water_sensor.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/water_sensor.o ${OBJECTDIR}/water_sensor_nomain.o;\
 	fi
 
 ${OBJECTDIR}/url_loader_nomain.o: ${OBJECTDIR}/url_loader.o url_loader.c 
@@ -372,17 +416,30 @@ ${OBJECTDIR}/StringBuffer_nomain.o: ${OBJECTDIR}/StringBuffer.o StringBuffer.c
 	    ${CP} ${OBJECTDIR}/StringBuffer.o ${OBJECTDIR}/StringBuffer_nomain.o;\
 	fi
 
-${OBJECTDIR}/key_value_pair_nomain.o: ${OBJECTDIR}/key_value_pair.o key_value_pair.c 
+${OBJECTDIR}/mock_sensor_nomain.o: ${OBJECTDIR}/mock_sensor.o mock_sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/key_value_pair.o`; \
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/mock_sensor.o`; \
 	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/key_value_pair_nomain.o key_value_pair.c;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/mock_sensor_nomain.o mock_sensor.c;\
 	else  \
-	    ${CP} ${OBJECTDIR}/key_value_pair.o ${OBJECTDIR}/key_value_pair_nomain.o;\
+	    ${CP} ${OBJECTDIR}/mock_sensor.o ${OBJECTDIR}/mock_sensor_nomain.o;\
+	fi
+
+${OBJECTDIR}/battery_sensor_nomain.o: ${OBJECTDIR}/battery_sensor.o battery_sensor.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/battery_sensor.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/battery_sensor_nomain.o battery_sensor.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/battery_sensor.o ${OBJECTDIR}/battery_sensor_nomain.o;\
 	fi
 
 ${OBJECTDIR}/sensor_nomain.o: ${OBJECTDIR}/sensor.o sensor.c 

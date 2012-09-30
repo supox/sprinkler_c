@@ -15,18 +15,21 @@
 
 struct SensorStruct;
 
-typedef struct {
+struct SensorStruct {
     int id;
     int port_index;
     double last_reading_value;
     time_t last_reading_time;
     enum sensor_type type;
-} Sensor;
+    bool (*read_sensor)(struct SensorStruct *this);
+};
+
+typedef struct SensorStruct Sensor;
 
 bool sensor_get_reading(Sensor* s, double* value);
 
 Sensor* sensor_create();
-void sensor_init(Sensor* s);
+bool sensor_init(Sensor* s, enum sensor_type type);
 void sensor_delete(Sensor*);
 Sensor** sensor_create_array(const size_t length);
 void sensor_delete_array(Sensor** sensors, const size_t length);

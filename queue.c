@@ -33,7 +33,7 @@ int IsFull(Queue Q) {
 int Count(Queue Q) {
     return Q->Size;
 }
-Queue CreateQueue(int MaxElements) {
+Queue queue_create(int MaxElements) {
   Queue Q;
 
   if (MaxElements < MinQueueSize) {
@@ -64,7 +64,7 @@ void MakeEmpty(Queue Q) {
 
 }
 
-void DisposeQueue(Queue Q) {
+void queue_delete(Queue Q) {
   if (Q != NULL) {
     free(Q->Array);
     free(Q);

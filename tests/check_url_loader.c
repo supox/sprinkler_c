@@ -15,7 +15,7 @@
  * Simple C Test Suite
  */
 
-void testGet_web_page() {
+void test_get_web_page() {
     char url[] = SENSORS_CONFIGURATION_URL;
     StringBuffer* response = string_buffer_create();
     bool result = get_web_page(url, response);
@@ -33,6 +33,8 @@ void test_post_web_page() {
     bool result = post_web_page(url, request, response);
     assert(result);
     
+    assert(strcmp(response->memory, ACK_STRING)==0);
+    
     string_buffer_delete(request);
     string_buffer_delete(response);
     
@@ -43,7 +45,7 @@ int main(int argc, char** argv) {
     printf("%%SUITE_STARTED%%\n");
 
     printf("%%TEST_STARTED%%  testGet_web_page (check_url_loader)\n");
-    testGet_web_page();
+    test_get_web_page();
     printf("%%TEST_FINISHED%% time=0 testGet_web_page (check_url_loader)\n");
     
     printf("%%TEST_STARTED%%  test_post_web_page (check_url_loader)\n");
