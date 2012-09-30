@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="84">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f3" displayName="Alarm" projectFiles="true" kind="ROOT">
+      <itemPath>alarm.c</itemPath>
+      <itemPath>alarm.h</itemPath>
+      <itemPath>alarm_list.c</itemPath>
+      <itemPath>alarm_list.h</itemPath>
+      <itemPath>alarm_type.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
@@ -57,6 +64,18 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f11"
+                     displayName="Alarm Test"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/alarm_test.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f10"
+                     displayName="Array List Test"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/array_list_test.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="f2"
                      displayName="Check Communication"
                      projectFiles="true"
@@ -146,6 +165,36 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f10">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f10</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f11">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f11</output>
         </linkerTool>
       </folder>
       <folder path="TestFiles/f2">

@@ -41,8 +41,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/url_loader.o \
 	${OBJECTDIR}/logger.o \
 	${OBJECTDIR}/message_type.o \
-	${OBJECTDIR}/communication.o \
 	${OBJECTDIR}/jsmn.o \
+	${OBJECTDIR}/alarm.o \
+	${OBJECTDIR}/communication.o \
 	${OBJECTDIR}/sensor_type.o \
 	${OBJECTDIR}/queue.o \
 	${OBJECTDIR}/StringBuffer.o \
@@ -51,6 +52,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/sensor.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/json_parser.o \
+	${OBJECTDIR}/alarm_list.o \
 	${OBJECTDIR}/sprinkler.o
 
 # Test Directory
@@ -58,6 +60,8 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${TESTDIR}/TestFiles/f11 \
+	${TESTDIR}/TestFiles/f10 \
 	${TESTDIR}/TestFiles/f2 \
 	${TESTDIR}/TestFiles/f8 \
 	${TESTDIR}/TestFiles/f1 \
@@ -122,15 +126,20 @@ ${OBJECTDIR}/message_type.o: message_type.c
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/message_type.o message_type.c
 
-${OBJECTDIR}/communication.o: communication.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/communication.o communication.c
-
 ${OBJECTDIR}/jsmn.o: jsmn.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/jsmn.o jsmn.c
+
+${OBJECTDIR}/alarm.o: alarm.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/alarm.o alarm.c
+
+${OBJECTDIR}/communication.o: communication.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/communication.o communication.c
 
 ${OBJECTDIR}/sensor_type.o: sensor_type.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -172,6 +181,11 @@ ${OBJECTDIR}/json_parser.o: json_parser.c
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_parser.o json_parser.c
 
+${OBJECTDIR}/alarm_list.o: alarm_list.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/alarm_list.o alarm_list.c
+
 ${OBJECTDIR}/sprinkler.o: sprinkler.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -182,6 +196,14 @@ ${OBJECTDIR}/sprinkler.o: sprinkler.c
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
+${TESTDIR}/TestFiles/f11: ${TESTDIR}/tests/alarm_test.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c}   -o ${TESTDIR}/TestFiles/f11 $^ ${LDLIBSOPTIONS} 
+
+${TESTDIR}/TestFiles/f10: ${TESTDIR}/tests/array_list_test.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c}   -o ${TESTDIR}/TestFiles/f10 $^ ${LDLIBSOPTIONS} 
+
 ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/check_communication.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.c}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} 
@@ -217,6 +239,18 @@ ${TESTDIR}/TestFiles/f4: ${TESTDIR}/tests/test_sensor.o ${OBJECTFILES:%.o=%_noma
 ${TESTDIR}/TestFiles/f9: ${TESTDIR}/tests/test_sprinkler.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.c}   -o ${TESTDIR}/TestFiles/f9 $^ ${LDLIBSOPTIONS} 
+
+
+${TESTDIR}/tests/alarm_test.o: tests/alarm_test.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/alarm_test.o tests/alarm_test.c
+
+
+${TESTDIR}/tests/array_list_test.o: tests/array_list_test.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/array_list_test.o tests/array_list_test.c
 
 
 ${TESTDIR}/tests/check_communication.o: tests/check_communication.c 
@@ -351,19 +385,6 @@ ${OBJECTDIR}/message_type_nomain.o: ${OBJECTDIR}/message_type.o message_type.c
 	    ${CP} ${OBJECTDIR}/message_type.o ${OBJECTDIR}/message_type_nomain.o;\
 	fi
 
-${OBJECTDIR}/communication_nomain.o: ${OBJECTDIR}/communication.o communication.c 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/communication.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/communication_nomain.o communication.c;\
-	else  \
-	    ${CP} ${OBJECTDIR}/communication.o ${OBJECTDIR}/communication_nomain.o;\
-	fi
-
 ${OBJECTDIR}/jsmn_nomain.o: ${OBJECTDIR}/jsmn.o jsmn.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/jsmn.o`; \
@@ -375,6 +396,32 @@ ${OBJECTDIR}/jsmn_nomain.o: ${OBJECTDIR}/jsmn.o jsmn.c
 	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/jsmn_nomain.o jsmn.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/jsmn.o ${OBJECTDIR}/jsmn_nomain.o;\
+	fi
+
+${OBJECTDIR}/alarm_nomain.o: ${OBJECTDIR}/alarm.o alarm.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/alarm.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/alarm_nomain.o alarm.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/alarm.o ${OBJECTDIR}/alarm_nomain.o;\
+	fi
+
+${OBJECTDIR}/communication_nomain.o: ${OBJECTDIR}/communication.o communication.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/communication.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/communication_nomain.o communication.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/communication.o ${OBJECTDIR}/communication_nomain.o;\
 	fi
 
 ${OBJECTDIR}/sensor_type_nomain.o: ${OBJECTDIR}/sensor_type.o sensor_type.c 
@@ -481,6 +528,19 @@ ${OBJECTDIR}/json_parser_nomain.o: ${OBJECTDIR}/json_parser.o json_parser.c
 	    ${CP} ${OBJECTDIR}/json_parser.o ${OBJECTDIR}/json_parser_nomain.o;\
 	fi
 
+${OBJECTDIR}/alarm_list_nomain.o: ${OBJECTDIR}/alarm_list.o alarm_list.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/alarm_list.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/alarm_list_nomain.o alarm_list.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/alarm_list.o ${OBJECTDIR}/alarm_list_nomain.o;\
+	fi
+
 ${OBJECTDIR}/sprinkler_nomain.o: ${OBJECTDIR}/sprinkler.o sprinkler.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/sprinkler.o`; \
@@ -498,6 +558,8 @@ ${OBJECTDIR}/sprinkler_nomain.o: ${OBJECTDIR}/sprinkler.o sprinkler.c
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${TESTDIR}/TestFiles/f11 || true; \
+	    ${TESTDIR}/TestFiles/f10 || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${TESTDIR}/TestFiles/f8 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \

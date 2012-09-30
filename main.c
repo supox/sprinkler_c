@@ -22,6 +22,7 @@ static bool read_sensors();
 static bool report_readings();
 static bool sleep_some_time();
 
+extern unsigned int sleep(unsigned int);
 /*
  * 
  */
