@@ -2,6 +2,7 @@
 #include "jsmn.h"
 #include "config.h"
 #include "logger.h"
+#include "alarm.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -289,7 +290,7 @@ bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor se
             Alarm* alarm = alarm_create(alarm_value, alarm_type);
             Sensor* s = sensors_hash[port_index];
             if(s!=NULL)
-                alarm_list_add(s->alarms, alarm);
+                list_add(s->alarms, (void*)alarm);
             else
                 alarm_delete(alarm);
         }

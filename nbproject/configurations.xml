@@ -4,8 +4,6 @@
     <logicalFolder name="f3" displayName="Alarm" projectFiles="true" kind="ROOT">
       <itemPath>alarm.c</itemPath>
       <itemPath>alarm.h</itemPath>
-      <itemPath>alarm_list.c</itemPath>
-      <itemPath>alarm_list.h</itemPath>
       <itemPath>alarm_type.h</itemPath>
     </logicalFolder>
     <logicalFolder name="HeaderFiles"
@@ -30,6 +28,13 @@
       <itemPath>json_formatter.h</itemPath>
       <itemPath>json_parser.c</itemPath>
       <itemPath>json_parser.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f4"
+                   displayName="LinkedList"
+                   projectFiles="true"
+                   kind="ROOT">
+      <itemPath>linked_list.c</itemPath>
+      <itemPath>linked_list.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -72,12 +77,6 @@
                      kind="TEST">
         <itemPath>tests/alarm_test.c</itemPath>
       </logicalFolder>
-      <logicalFolder name="f10"
-                     displayName="Array List Test"
-                     projectFiles="true"
-                     kind="TEST">
-        <itemPath>tests/array_list_test.c</itemPath>
-      </logicalFolder>
       <logicalFolder name="f2"
                      displayName="Check Communication"
                      projectFiles="true"
@@ -101,6 +100,12 @@
                      projectFiles="true"
                      kind="TEST">
         <itemPath>tests/check_url_loader.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f12"
+                     displayName="LinkedLink test"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/linked_link_test.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f6"
                      displayName="StringBuffer test"
@@ -197,6 +202,21 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f11</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f12">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f12</output>
         </linkerTool>
       </folder>
       <folder path="TestFiles/f2">

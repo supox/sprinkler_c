@@ -43,7 +43,7 @@ void sprinkler_delete(Sprinkler* s) {
 bool sprinkler_initialize(Sprinkler* s) {
     int iSensorIndex;
     s->id = 0;
-    s->refresh_rate = DEFAULT_REFRESH_RATE;
+    s->refresh_rate = DEFAULT_REFRESH_RATE_SECONDS;
     s->main_valf_delay = 0;
     s->main_valf = -1;
     s->number_of_sensors = 0;

@@ -10,7 +10,7 @@
 #define	SENSOR_H
 
 #include "sensor_type.h"
-#include "alarm_list.h"
+#include "linked_list.h"
 #include <stdbool.h>
 #include <time.h>
 
@@ -22,9 +22,11 @@ struct SensorStruct {
     int port_index;
     double last_reading_value;
     time_t last_reading_time;
+    time_t last_saved_reading_time;
+    time_t report_reading_time_delta;
     enum sensor_type type;
-    AlarmList* alarms;
-    bool (*read_sensor)(struct SensorStruct *this);
+    ListElement* alarms;
+    bool (*read_sensor)(struct SensorStruct *this, double *value);
 };
 
 typedef struct SensorStruct Sensor;

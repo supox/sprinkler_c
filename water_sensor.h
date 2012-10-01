@@ -10,7 +10,7 @@
 
 #include "sensor.h"
 
-bool sensor_water_reader(Sensor *this);
+bool sensor_water_reader(Sensor *this, double* value);
 
 #endif	/* WATER_SENSOR_H */
 

@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
+
 #include "url_loader.h"
 #include "config.h"
 

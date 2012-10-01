@@ -1,6 +1,6 @@
 #include "battery_sensor.h"
 
-bool sensor_battery_reader(Sensor *this) {
-    this->last_reading_value = 0; // TODO
+bool sensor_battery_reader(Sensor *this, double* value) {
+    *value = 0; // TODO
     return false;
 }

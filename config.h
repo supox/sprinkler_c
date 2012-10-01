@@ -12,7 +12,8 @@
 #define MAX_NUMBER_OF_SENSORS 16
 #define MAX_SENSORS_READING_SIZE 512
 #define QUEUE_MAX_NUMBER_OF_ELEMENTS 256
-#define DEFAULT_REFRESH_RATE 3600 // every hour.
+#define DEFAULT_REFRESH_RATE_SECONDS 3600 // every hour.
+#define DEFAULT_SENSOR_READING_TIME_DELTA_SECONDS 60 // one minute
 
 // Logger
 #define LOGGER_FILENAME "/home/supox/Desktop/log.txt"

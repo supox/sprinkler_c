@@ -48,12 +48,12 @@ OBJECTFILES= \
 	${OBJECTDIR}/time_functions.o \
 	${OBJECTDIR}/queue.o \
 	${OBJECTDIR}/StringBuffer.o \
+	${OBJECTDIR}/linked_list.o \
 	${OBJECTDIR}/mock_sensor.o \
 	${OBJECTDIR}/battery_sensor.o \
 	${OBJECTDIR}/sensor.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/json_parser.o \
-	${OBJECTDIR}/alarm_list.o \
 	${OBJECTDIR}/sprinkler.o
 
 # Test Directory
@@ -162,6 +162,11 @@ ${OBJECTDIR}/StringBuffer.o: StringBuffer.c
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/StringBuffer.o StringBuffer.c
 
+${OBJECTDIR}/linked_list.o: linked_list.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/linked_list.o linked_list.c
+
 ${OBJECTDIR}/mock_sensor.o: mock_sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -187,11 +192,6 @@ ${OBJECTDIR}/json_parser.o: json_parser.c
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_parser.o json_parser.c
 
-${OBJECTDIR}/alarm_list.o: alarm_list.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/alarm_list.o alarm_list.c
-
 ${OBJECTDIR}/sprinkler.o: sprinkler.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -203,10 +203,6 @@ ${OBJECTDIR}/sprinkler.o: sprinkler.c
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/alarm_test.o ${OBJECTFILES:%.o=%_nomain.o}
-	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
-
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/array_list_test.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
 
@@ -223,6 +219,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/checklogg
 	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/check_url_loader.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
+
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/linked_link_test.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
 
@@ -253,12 +253,6 @@ ${TESTDIR}/tests/alarm_test.o: tests/alarm_test.c
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/alarm_test.o tests/alarm_test.c
 
 
-${TESTDIR}/tests/array_list_test.o: tests/array_list_test.c 
-	${MKDIR} -p ${TESTDIR}/tests
-	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/array_list_test.o tests/array_list_test.c
-
-
 ${TESTDIR}/tests/check_communication.o: tests/check_communication.c 
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
@@ -281,6 +275,12 @@ ${TESTDIR}/tests/check_url_loader.o: tests/check_url_loader.c
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/check_url_loader.o tests/check_url_loader.c
+
+
+${TESTDIR}/tests/linked_link_test.o: tests/linked_link_test.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/linked_link_test.o tests/linked_link_test.c
 
 
 ${TESTDIR}/tests/string_buffer_test.o: tests/string_buffer_test.c 
@@ -482,6 +482,19 @@ ${OBJECTDIR}/StringBuffer_nomain.o: ${OBJECTDIR}/StringBuffer.o StringBuffer.c
 	    ${CP} ${OBJECTDIR}/StringBuffer.o ${OBJECTDIR}/StringBuffer_nomain.o;\
 	fi
 
+${OBJECTDIR}/linked_list_nomain.o: ${OBJECTDIR}/linked_list.o linked_list.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/linked_list.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/linked_list_nomain.o linked_list.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/linked_list.o ${OBJECTDIR}/linked_list_nomain.o;\
+	fi
+
 ${OBJECTDIR}/mock_sensor_nomain.o: ${OBJECTDIR}/mock_sensor.o mock_sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/mock_sensor.o`; \
@@ -545,19 +558,6 @@ ${OBJECTDIR}/json_parser_nomain.o: ${OBJECTDIR}/json_parser.o json_parser.c
 	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/json_parser_nomain.o json_parser.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/json_parser.o ${OBJECTDIR}/json_parser_nomain.o;\
-	fi
-
-${OBJECTDIR}/alarm_list_nomain.o: ${OBJECTDIR}/alarm_list.o alarm_list.c 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/alarm_list.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/alarm_list_nomain.o alarm_list.c;\
-	else  \
-	    ${CP} ${OBJECTDIR}/alarm_list.o ${OBJECTDIR}/alarm_list_nomain.o;\
 	fi
 
 ${OBJECTDIR}/sprinkler_nomain.o: ${OBJECTDIR}/sprinkler.o sprinkler.c 

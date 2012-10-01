@@ -1,4 +1,5 @@
 #include "alarm.h"
+#include "linked_list.h"
 #include <stdlib.h>
 
 bool alarm_will_alarm(Alarm *alarm, const double sensor_value) {
@@ -27,5 +28,13 @@ Alarm* alarm_create(double alarm_value, enum AlarmType type) {
 
 void alarm_delete(Alarm* alarm) {
     free(alarm);
+}
+
+bool alarm_list_will_alarm(ListElement *root, const double sensor_value) {
+    for(root = root->next; root != NULL ; root = root->next) {
+        if (alarm_will_alarm((Alarm*)root->node, sensor_value))
+            return true;
+    }
+    return false;
 }
 

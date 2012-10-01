@@ -9,6 +9,7 @@
 #define	ALARM_H
 
 #include "alarm_type.h"
+#include "linked_list.h"
 #include <stdbool.h>
 
 typedef struct {
@@ -18,6 +19,7 @@ typedef struct {
 
 
 bool alarm_will_alarm(Alarm *alarm, const double sensor_value);
+bool alarm_list_will_alarm(ListElement *root, const double sensor_value);
 
 // Constructor and destructor
 Alarm* alarm_create(double alarm_value, enum AlarmType type);

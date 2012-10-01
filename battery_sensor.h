@@ -10,7 +10,7 @@
 
 #include "sensor.h"
 
-bool sensor_battery_reader(Sensor *this);
+bool sensor_battery_reader(Sensor *this, double* value);
 
 #endif	/* BATTERY_SENSOR_H */
 

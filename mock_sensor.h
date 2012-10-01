@@ -10,6 +10,6 @@
 
 #include "sensor.h"
 
-bool sensor_mock_reader(Sensor *this);
+bool sensor_mock_reader(Sensor *this, double* value);
         
 #endif	/* MOCK_SENSOR_H */
