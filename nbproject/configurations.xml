@@ -20,6 +20,7 @@
       <itemPath>queue.h</itemPath>
       <itemPath>sprinkler.h</itemPath>
       <itemPath>string_buffer.h</itemPath>
+      <itemPath>time_functions.h</itemPath>
       <itemPath>url_loader.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f1" displayName="Json" projectFiles="true">
@@ -58,6 +59,7 @@
       <itemPath>message_type.c</itemPath>
       <itemPath>queue.c</itemPath>
       <itemPath>sprinkler.c</itemPath>
+      <itemPath>time_functions.c</itemPath>
       <itemPath>url_loader.c</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"

@@ -1,14 +1,14 @@
 #include "sensor.h"
 #include "alarm_list.h"
+#include "time_functions.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 bool sensor_get_reading(Sensor* s, double* value, bool *will_alarm) {
     bool ret = s->read_sensor(s);
     if (ret) {
-        s->last_reading_time = time(NULL);
+        s->last_reading_time = get_time();
         *value = s->last_reading_value;
         *will_alarm = alarm_list_will_alarm(s->alarms, s->last_reading_value);
     }

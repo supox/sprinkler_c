@@ -8,10 +8,10 @@
 #include "sprinkler.h"
 #include "json_formatter.h"
 #include "communication.h"
+#include "time_functions.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <stdbool.h>
 
 Sprinkler sprinkler;
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
 
 void init() {
     /* initialize random seed: */
-    srand(time(NULL));
+    srand(get_time());
     comm_init(&comm);
 
     sprinkler_initialize(&sprinkler);

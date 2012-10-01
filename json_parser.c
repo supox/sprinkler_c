@@ -16,9 +16,6 @@
 #define MAIN_VALF_DELAY_TAG     "main_valve_delay"
 #define MAIN_VALF_TAG           "main_valf"
 
-
-
-
 #define TOKEN_STRING(js, t, s) \
 	(strncmp(js+(t).start, s, (t).end - (t).start) == 0 \
 	 && strlen(s) == (t).end - (t).start)
@@ -165,7 +162,7 @@ bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, Sensor s
 
     // iterate of all tokens, try to build sensors
     for (iCurrentTokenIndex = iSensorsArrayTokenIndex + 1;
-            tokens[iCurrentTokenIndex].start < tokens[iSensorsArrayTokenIndex].end;
+            tokens[iCurrentTokenIndex].end < tokens[iSensorsArrayTokenIndex].end;
             ) {
         int id = -1, port_index = -1, value;
         const size_t number_of_object_tokens = tokens[iCurrentTokenIndex].size;
@@ -173,7 +170,7 @@ bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, Sensor s
 
         // We're expecting something like - {"id":4,"port_index":6}
         if (tokens[iCurrentTokenIndex].type != JSMN_OBJECT || number_of_object_tokens < 4) {
-            break; // TODO - add logs
+            continue; // TODO - add logs
         }
 
         iCurrentTokenIndex++;
@@ -247,7 +244,7 @@ bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor se
 
     // iterate of all tokens, try to build alarms
     for (iCurrentTokenIndex = iAlarmsTokenIndex + 1;
-            tokens[iCurrentTokenIndex].start < tokens[iAlarmsTokenIndex].end;
+            tokens[iCurrentTokenIndex].end < tokens[iAlarmsTokenIndex].end;
             ) {
         int port_index = -1;
         double alarm_value = -9999;
@@ -257,7 +254,8 @@ bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor se
 
         // We're expecting something like - {"port_index":1,"alarm_value":5.0,"condition_type":"greater_than"}
         if (tokens[iCurrentTokenIndex].type != JSMN_OBJECT || number_of_object_tokens < 6) {
-            break; // TODO - add logs
+            iCurrentTokenIndex++;
+            continue; // TODO - add logs
         }
 
         iCurrentTokenIndex++;
@@ -268,7 +266,8 @@ bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor se
             if (tokens[iCurrentTokenIndex].type != JSMN_STRING) // Must be an error...
                 break;
 
-            if (tokens[iCurrentTokenIndex + 1].type != JSMN_PRIMITIVE && tokens[iCurrentTokenIndex + 1].type != JSMN_STRING) // Must be an error...
+            if (tokens[iCurrentTokenIndex + 1].type != JSMN_PRIMITIVE
+                    && tokens[iCurrentTokenIndex + 1].type != JSMN_STRING) // Must be an error...
                 break;
 
             if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], ALARM_VALUE_TAG)) { // alarm value tag
@@ -277,17 +276,16 @@ bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor se
             } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], PORT_INDEX_TAG)) { // Port index tag
                 if (!token_to_int(json_buffer, &tokens[iCurrentTokenIndex + 1], &port_index))
                     break;
-            } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], CONDITION_TYPE_TAG)) { // Port index tag
+            } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], CONDITION_TYPE_TAG)) { // Condition type tag
                 if (!token_to_alarm_type(json_buffer, &tokens[iCurrentTokenIndex + 1], &alarm_type))
                     break;
             } // else - ignore this key.
 
             iCurrentTokenIndex += 2;
             number_of_processed_tokens+=2;
-
         }
 
-        if (port_index >= 0 && alarm_type != INVALID && port_index <= max_port_index) { // Add alarm
+        if (port_index >= 0 && alarm_type != INVALID && alarm_value != -9999 && port_index <= max_port_index) { // Add alarm
             Alarm* alarm = alarm_create(alarm_value, alarm_type);
             Sensor* s = sensors_hash[port_index];
             if(s!=NULL)

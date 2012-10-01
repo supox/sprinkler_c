@@ -45,6 +45,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/alarm.o \
 	${OBJECTDIR}/communication.o \
 	${OBJECTDIR}/sensor_type.o \
+	${OBJECTDIR}/time_functions.o \
 	${OBJECTDIR}/queue.o \
 	${OBJECTDIR}/StringBuffer.o \
 	${OBJECTDIR}/mock_sensor.o \
@@ -145,6 +146,11 @@ ${OBJECTDIR}/sensor_type.o: sensor_type.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sensor_type.o sensor_type.c
+
+${OBJECTDIR}/time_functions.o: time_functions.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/time_functions.o time_functions.c
 
 ${OBJECTDIR}/queue.o: queue.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -435,6 +441,19 @@ ${OBJECTDIR}/sensor_type_nomain.o: ${OBJECTDIR}/sensor_type.o sensor_type.c
 	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/sensor_type_nomain.o sensor_type.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/sensor_type.o ${OBJECTDIR}/sensor_type_nomain.o;\
+	fi
+
+${OBJECTDIR}/time_functions_nomain.o: ${OBJECTDIR}/time_functions.o time_functions.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/time_functions.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/time_functions_nomain.o time_functions.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/time_functions.o ${OBJECTDIR}/time_functions_nomain.o;\
 	fi
 
 ${OBJECTDIR}/queue_nomain.o: ${OBJECTDIR}/queue.o queue.c 

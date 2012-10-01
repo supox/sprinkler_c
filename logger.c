@@ -1,10 +1,11 @@
 #include "logger.h"
-#include <time.h>
+#include "config.h"
+#include "time_functions.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "config.h"
 
 static FILE* logger_handle=NULL;
 static bool logger_dump_mode = (bool)LOGGER_DUMP_MODE_DEFAULT;
@@ -43,7 +44,7 @@ void add_to_log(char* message, enum logger_level level) {
             return;
     logger_level_to_str(logger_level_str, level);
     
-    t= time(NULL);
+    t = get_time();
     fprintf(logger_handle, "%u %s : %s\n", (unsigned)t, logger_level_str, message);
     
     if(logger_dump_mode) // Log to console :

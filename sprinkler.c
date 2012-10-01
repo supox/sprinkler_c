@@ -2,6 +2,7 @@
 #include "logger.h"
 #include "string_buffer.h"
 #include "url_loader.h"
+#include "time_functions.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -76,7 +77,7 @@ static bool sprinkler_load_config(Sprinkler* s) {
 }
 
 bool sprinkler_needs_to_report_reading(Sprinkler *s) {
-    time_t current_time = time(NULL);
+    time_t current_time = get_time();
     return (current_time - s->last_report_time >= s->refresh_rate);
 }
 
@@ -120,7 +121,7 @@ bool sprinkler_report_reading(Sprinkler *s) {
     }
 
     if(rv)
-        s->last_report_time = time(NULL);
+        s->last_report_time = get_time();
     
     return rv;
 }
