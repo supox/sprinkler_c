@@ -17,50 +17,39 @@
  */
 
 void test_json_parse_sensors() {
-    int ids[]={1,2,5,4,6};
-    int ports[]={1,2,5,6,8};
+    const int ids[]={1,2,5,4,6};
+    const int ports[]={1,2,5,6,8};
+    const double alarms_values[]={5,3,80};
+    const enum AlarmType alarms_types[] = {GREATER_THAN, NOT_EQUAL, GREATER_THAN};
+    
     int i;
     const char* json_buffer = "{\"sensors\":[{\"id\":1,\"port_index\":1},{\"id\":2,\"port_index\":2},{\"id\":5,\"port_index\":5},{\"id\":4,\"port_index\":6},{\"id\":6,\"port_index\":8}],\"alarms\":[{\"port_index\":1,\"alarm_value\":5.0,\"condition_type\":\"greater_than\"},{\"port_index\":1,\"alarm_value\":3.0,\"condition_type\":\"not_equal\"},{\"port_index\":1,\"alarm_value\":80.0,\"condition_type\":\"greater_than\"}]}\n";
-    Sensor pSensors[MAX_NUMBER_OF_SENSORS];
+    ListElement* sensors = sensor_create_list();
+    ListElement* root_sensors;
+    ListElement* root_alarms;
     bool result;
-    size_t iSensorsLength = 0;
-    
-    for(i = 0; i < MAX_NUMBER_OF_SENSORS ; i++)
-        sensor_init(&pSensors[i], MOCK);
-    
-    result = json_parse_sensors(json_buffer, pSensors, &iSensorsLength, MAX_NUMBER_OF_SENSORS);
+        
+    result = json_parse_sensors(json_buffer, sensors);
     assert(result);
-    assert(iSensorsLength == 5);
-    for(i=0; i<iSensorsLength; i++) {
-        assert(pSensors[i].port_index==ports[i]);
-        assert(pSensors[i].id==ids[i]);
+    assert(list_count(sensors) == 5);
+    
+    for (i=0, root_sensors = sensors->next; root_sensors != NULL; root_sensors = root_sensors->next, ++i) {
+        Sensor* sensor = (Sensor*)root_sensors->node;
+        assert(sensor->port_index==ports[i]);
+        assert(sensor->id==ids[i]);
     }
-}
+    
+    root_alarms = ((Sensor*)(sensors->next->node))->alarms;
+    assert(list_count(root_alarms)==3);
+    
+    for (i=0, root_alarms = root_alarms->next; root_alarms != NULL; root_alarms = root_alarms->next, ++i) {
+        Alarm* alarm = (Alarm*)root_alarms->node;
 
-void test_json_parse_alarms() {
-    double values[]={5,3,80};
-    enum AlarmType types[] = {GREATER_THAN, NOT_EQUAL, GREATER_THAN};
-    int i;
-    const char* json_buffer = "{\"sensors\":[{\"id\":1,\"port_index\":1},{\"id\":2,\"port_index\":2},{\"id\":5,\"port_index\":5},{\"id\":4,\"port_index\":6},{\"id\":6,\"port_index\":8}],\"alarms\":[{\"port_index\":1,\"alarm_value\":5.0,\"condition_type\":\"greater_than\"},{\"port_index\":1,\"alarm_value\":3.0,\"condition_type\":\"not_equal\"},{\"port_index\":1,\"alarm_value\":80.0,\"condition_type\":\"greater_than\"}]}\n";
-    Sensor pSensors[MAX_NUMBER_OF_SENSORS];
-    size_t iSensorsLength = 0;
-    bool result;
-    ListElement* root;
-    
-    for(i = 0; i < MAX_NUMBER_OF_SENSORS ; i++)
-        sensor_init(&pSensors[i], MOCK);    
-    
-    result = json_parse_sensors(json_buffer, pSensors, &iSensorsLength, MAX_NUMBER_OF_SENSORS);
-    assert(result);
-    assert(iSensorsLength == 5);
-    root = pSensors[0].alarms;
-    
-    for(i = 0 ; i < 3 ; i++ ) {
-        assert(root->next != NULL);
-        root = root->next;
-        assert(((Alarm*)root->node)->alarm_value == values[i]);
-        assert(((Alarm*)root->node)->type == types[i]);
+        assert(alarm->alarm_value == alarms_values[i]);
+        assert(alarm->type == alarms_types[i]);
     }
+    
+    list_delete(sensors);
 }
 
 int main(int argc, char** argv) {
@@ -70,10 +59,6 @@ int main(int argc, char** argv) {
     printf("%%TEST_STARTED%%  test_json_parse_sensors (check_json_parse)\n");
     test_json_parse_sensors();
     printf("%%TEST_FINISHED%% time=0 test_json_parse_sensors (check_json_parse)\n");
-
-    printf("%%TEST_STARTED%%  test_json_parse_alarms (check_json_parse)\n");
-        test_json_parse_alarms();
-    printf("%%TEST_FINISHED%% time=0 test_json_parse_alarms (check_json_parse)\n");
 
     printf("%%SUITE_FINISHED%% time=0\n");
 

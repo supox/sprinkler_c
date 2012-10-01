@@ -22,7 +22,7 @@ typedef struct {
     int main_valf;
     size_t number_of_sensors;
     time_t last_report_time;
-    Sensor sensors[MAX_NUMBER_OF_SENSORS];
+    ListElement* sensors;
     bool has_alarmed;
     // Queue message_queues;
     
@@ -35,6 +35,7 @@ bool sprinkler_needs_to_report_reading(Sprinkler *s);
 
 bool sprinkler_initialize(Sprinkler* s);
 Sprinkler* sprinkler_create();
+void sprinkler_free_elements(Sprinkler*);
 void sprinkler_delete(Sprinkler* s);
 
 #endif	/* SPRINKLER_H */

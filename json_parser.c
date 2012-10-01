@@ -25,8 +25,8 @@ static bool json_parse(const char *json_buffer, jsmntok_t *tokens);
 static int find_json_array_token(jsmntok_t *tokens, const char* json_buffer, const char* token_key);
 static bool token_to_int(const char* json_buffer, jsmntok_t *token, int *value);
 static bool token_to_double(const char* json_buffer, jsmntok_t *token, double *value);
-static bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, Sensor sensors[], size_t* iSensorsLength, size_t MaxSensorsLength);
-static bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor sensors[], size_t iSensorsLength);
+static bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors);
+static bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors);
 
 bool json_parse_sprinkler_configuration(const char* json_buffer, Sprinkler* sprinkler) {
     int iCurrentTokenIndex;
@@ -67,7 +67,7 @@ bool json_parse_sprinkler_configuration(const char* json_buffer, Sprinkler* spri
     }
 }
 
-bool json_parse_sensors(const char* json_buffer, Sensor sensors[], size_t* iSensorsLength, size_t MaxSensorsLength) {
+bool json_parse_sensors(const char* json_buffer, ListElement* sensors) {
     jsmntok_t tokens[MAX_NUMBER_OF_TOKENS];
 
     // Parse json string
@@ -76,12 +76,12 @@ bool json_parse_sensors(const char* json_buffer, Sensor sensors[], size_t* iSens
         return false;
     }
 
-    if (!json_parse_sensors_int(tokens, json_buffer, sensors, iSensorsLength, MaxSensorsLength)) {
+    if (!json_parse_sensors_int(tokens, json_buffer, sensors)) {
         add_to_log("json_parse_sensors: Could not find sensors data.", ERROR);
         return false;
     }
 
-    if (!json_parse_alarms_int(tokens, json_buffer, sensors, *iSensorsLength)) {
+    if (!json_parse_alarms_int(tokens, json_buffer, sensors)) {
         add_to_log("json_parse_sensors: Could not find alarms data.", ERROR);
         return false;
     }
@@ -151,8 +151,7 @@ bool token_to_alarm_type(const char* json_buffer, jsmntok_t *token, enum AlarmTy
     return false;
 }
 
-bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, Sensor sensors[], size_t* iSensorsLength, size_t MaxSensorsLength) {
-    int num_of_sensors = 0;
+bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
     int iSensorsArrayTokenIndex, iCurrentTokenIndex;
 
     // Find sensors array token:
@@ -199,26 +198,23 @@ bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, Sensor s
         }
 
         if (id >= 0 && port_index >= 0) { // Add sensor
-            sensors[num_of_sensors].id = id;
-            sensors[num_of_sensors].port_index = port_index;
-
-            num_of_sensors++;
-            if (num_of_sensors >= MaxSensorsLength)
-                break;
+            Sensor* sensor = sensor_create();
+            sensor->id = id;
+            sensor->port_index = port_index;
+            list_add(sensors, sensor);
         }
     }
-
-    *iSensorsLength = num_of_sensors;
     return true;
 }
 
-bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor sensors[], size_t iSensorsLength) {
+bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
     int max_port_index = 0;
     int iAlarmsTokenIndex, iCurrentTokenIndex;
-    size_t sensor_index;
     Sensor** sensors_hash;
+    ListElement* root_sensors;
+    int sensor_index;
 
-    if (iSensorsLength == 0)
+    if (list_empty(sensors))
         return true;
 
     iAlarmsTokenIndex = find_json_array_token(tokens, json_buffer, ALARM_TAG);
@@ -227,20 +223,22 @@ bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, Sensor se
     }
 
     // Build sensor hash table - port_index to sensor;
-    for (sensor_index = 0; sensor_index < iSensorsLength; sensor_index++) {
-        if (sensors[sensor_index].port_index < 0)
+    for (root_sensors = sensors->next; root_sensors != NULL; root_sensors = root_sensors->next) {
+        Sensor* sensor = (Sensor*)root_sensors->node;
+        if (sensor->port_index < 0)
             return false; // invalid
 
-        if (sensors[sensor_index].port_index > max_port_index)
-            max_port_index = sensors[sensor_index].port_index;
+        if (sensor->port_index > max_port_index)
+            max_port_index = sensor->port_index;
     }
 
     sensors_hash = (Sensor**) calloc(sizeof (Sensor*), max_port_index + 1);
     for (sensor_index = 0; sensor_index <= max_port_index; sensor_index++) // Zero all pointers, could be memset.
         sensors_hash[sensor_index] = NULL;
 
-    for (sensor_index = 0; sensor_index < iSensorsLength; sensor_index++) { // Build hash
-        sensors_hash[sensors[sensor_index].port_index] = &sensors[sensor_index];
+    for (root_sensors = sensors->next; root_sensors != NULL; root_sensors = root_sensors->next) {
+        Sensor* sensor = (Sensor*)root_sensors->node;
+        sensors_hash[sensor->port_index] = sensor;
     }
 
     // iterate of all tokens, try to build alarms

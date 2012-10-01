@@ -37,6 +37,7 @@ int main(int argc, char** argv) {
         sleep_some_time();
     }
 
+    sprinkler_free_elements(&sprinkler);
     return (EXIT_SUCCESS);
 }
 

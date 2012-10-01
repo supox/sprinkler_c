@@ -18,12 +18,16 @@ struct list_el{
 
 typedef struct list_el ListElement;
 
+typedef void(*delete_function)(void*);
+
+
 // List functions
 bool list_add(ListElement* root, void* node);
 bool list_contains(ListElement* root, void* node);
 bool list_remove(ListElement* root, void *node);
 bool list_empty(ListElement* root);
 bool list_clear(ListElement* root);
+void list_set_delete_function(ListElement* root, delete_function f);
 size_t list_count(ListElement* root);
 
 ListElement* list_create();

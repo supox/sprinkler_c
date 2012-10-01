@@ -2,6 +2,7 @@
 #include "time_functions.h"
 #include "config.h"
 #include "reading_data.h"
+#include "alarm.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,7 +49,7 @@ bool sensor_init(Sensor* s, enum sensor_type type) {
     s->last_saved_reading_time = 0;
     s->report_reading_time_delta = DEFAULT_SENSOR_READING_TIME_DELTA_SECONDS;
     s->type = type;
-    s->alarms = list_create();
+    s->alarms = alarm_list_create();
     s->readings_to_report = list_create();
     return sensor_factory_init(s);
 }
@@ -61,6 +62,11 @@ void sensor_delete(Sensor* s) {
 void sensor_free_elements(Sensor* s) {
     list_delete(s->alarms);
     list_delete(s->readings_to_report);
+}
+
+ListElement* sensor_create_list() {
+    ListElement *root = list_create();
+    list_set_delete_function(root, (delete_function)sensor_delete);
 }
 
 Sensor** sensor_create_array(const size_t length) {

@@ -39,7 +39,6 @@ void test_list_add() {
 void test_list_create() {
     ListElement* root = list_create();
     assert(root != NULL);
-    assert(root->node == NULL);
     assert(root->next == NULL);
     list_delete(root);
 }
@@ -143,14 +142,14 @@ void test_list_empty() {
     assert(!list_empty(root));
     list_add(root, node3);
     assert(!list_empty(root));
-    
-    list_remove(root,node1);
+
+    list_remove(root, node1);
     assert(!list_empty(root));
-    list_remove(root,node2);
+    list_remove(root, node2);
     assert(!list_empty(root));
-    list_remove(root,node3);
+    list_remove(root, node3);
     assert(list_empty(root));
-    
+
     node1 = alarm_create(1, GREATER_THAN);
     list_add(root, node1);
     assert(!list_empty(root));
@@ -158,7 +157,25 @@ void test_list_empty() {
     list_clear(root);
     assert(list_empty(root));
 
-    list_delete(root);    
+    list_delete(root);
+}
+
+bool has_free=false;
+void my_free(void* p) {
+    has_free=true;
+    free(p);
+}
+void test_list_delete_function() {
+    ListElement* root = list_create();
+    list_set_delete_function(root, my_free);
+    Alarm* node1 = alarm_create(1, GREATER_THAN);
+    list_add(root, node1);
+
+    has_free = false;
+    list_remove(root, node1);
+    assert(has_free);
+    
+    list_delete(root);
 }
 
 int main(int argc, char** argv) {
@@ -188,6 +205,10 @@ int main(int argc, char** argv) {
     printf("%%TEST_STARTED%%  test_list_empty (list_test)\n");
     test_list_empty();
     printf("%%TEST_FINISHED%% time=0 test_list_empty (list_test)\n");
+
+    printf("%%TEST_STARTED%%  test_list_delete_function (list_test)\n");
+    test_list_delete_function();
+    printf("%%TEST_FINISHED%% time=0 test_list_delete_function (list_test)\n");
 
     printf("%%SUITE_FINISHED%% time=0\n");
 

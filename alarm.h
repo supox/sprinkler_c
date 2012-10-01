@@ -22,6 +22,7 @@ bool alarm_will_alarm(Alarm *alarm, const double sensor_value);
 bool alarm_list_will_alarm(ListElement *root, const double sensor_value);
 
 // Constructor and destructor
+ListElement* alarm_list_create();
 Alarm* alarm_create(double alarm_value, enum AlarmType type);
 void alarm_delete(Alarm* alarm);
 

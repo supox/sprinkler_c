@@ -38,6 +38,7 @@ Sensor* sensor_create();
 bool sensor_init(Sensor* s, enum sensor_type type);
 void sensor_delete(Sensor*);
 void sensor_free_elements(Sensor*);
+ListElement* sensor_create_list();
 Sensor** sensor_create_array(const size_t length);
 void sensor_delete_array(Sensor** sensors, const size_t length);
 

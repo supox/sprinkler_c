@@ -17,6 +17,12 @@ bool alarm_will_alarm(Alarm *alarm, const double sensor_value) {
     }
 }
 
+ListElement* alarm_list_create() {
+    ListElement* root = list_create();
+    list_set_delete_function(root, (delete_function)alarm_delete);
+    return root;
+}
+
 Alarm* alarm_create(double alarm_value, enum AlarmType type) {
     Alarm* alarm = (Alarm*)malloc(sizeof(Alarm));
     if(alarm != NULL) {

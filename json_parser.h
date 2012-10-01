@@ -11,7 +11,7 @@
 #include "sensor.h"
 #include "sprinkler.h"
 
-bool json_parse_sensors(const char* json_buffer, Sensor sensors[], size_t* iSensorsLength, size_t MaxSensorsLength);
+bool json_parse_sensors(const char* json_buffer, ListElement* sensors);
 bool json_parse_sprinkler_configuration(const char* json_buffer, Sprinkler* sprinkler);
 
 #endif	/* JSON_PARSER_H */

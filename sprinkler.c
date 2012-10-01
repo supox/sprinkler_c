@@ -14,11 +14,12 @@ static bool report_reading_data(const char* url, const reading_data* data);
 
 bool sprinkler_read_sensors(Sprinkler* s) {
     bool ret = true;
-    size_t iSensorIndex;
-    for (iSensorIndex = 0; iSensorIndex < s->number_of_sensors; iSensorIndex++) {
+    ListElement* root = s->sensors;
+    for (root = root->next; root != NULL; root = root->next) {
+        Sensor* sensor = (Sensor*) root->node;
         bool will_alarm = false;
         double value = 0;
-        ret &= sensor_get_reading(&s->sensors[iSensorIndex], &value, &will_alarm);
+        ret &= sensor_get_reading(sensor, &value, &will_alarm);
         s->has_alarmed |= will_alarm;
     }
     return ret;
@@ -37,12 +38,16 @@ Sprinkler* sprinkler_create() {
     return sprinkler;
 }
 
+void sprinkler_free_elements(Sprinkler* s) {
+    list_delete(s->sensors);
+}
+
 void sprinkler_delete(Sprinkler* s) {
+    sprinkler_free_elements(s);
     free(s);
 }
 
 bool sprinkler_initialize(Sprinkler* s) {
-    int iSensorIndex;
     s->id = 0;
     s->refresh_rate = DEFAULT_REFRESH_RATE_SECONDS;
     s->main_valf_delay = 0;
@@ -50,9 +55,7 @@ bool sprinkler_initialize(Sprinkler* s) {
     s->number_of_sensors = 0;
     s->last_report_time = 0;
     s->has_alarmed = false;
-    for (iSensorIndex = 0; iSensorIndex < MAX_NUMBER_OF_SENSORS; iSensorIndex++) {
-        sensor_init(&(s->sensors[iSensorIndex]), MOCK);
-    }
+    s->sensors = sensor_create_list();
 
     return sprinkler_load_config(s);
 }
@@ -94,24 +97,26 @@ bool sprinkler_report_reading(Sprinkler *s) {
 
     add_to_log("sprinkler_report_reading : Reporting readings.", DUMP);
 
-    for (sensor_index = 0; sensor_index < s->number_of_sensors; sensor_index++) {
+    ListElement* root_sensors = s->sensors;
+    for (root_sensors = root_sensors->next; root_sensors != NULL; root_sensors = root_sensors->next) {
+        Sensor* sensor = (Sensor*)root_sensors->node;
         char *url = NULL, *buf = NULL;
 
-        if (list_empty(s->sensors[sensor_index].readings_to_report))
+        
+        if (list_empty(sensor->readings_to_report))
             continue;
 
         // Build URL
-        str_length = asprintf(&url, SENSOR_URL_FORMAT, s->sensors[sensor_index].id);
+        str_length = asprintf(&url, SENSOR_URL_FORMAT, sensor->id);
         if (str_length > 0) {
-            
+
             // Report all readings
-            ListElement *root = s->sensors[sensor_index].readings_to_report;
-            for (root = root->next; root != NULL; root = root->next) {
-                reading_data* data = (reading_data*) root->node;
-                if (!report_reading_data(url, (reading_data*) root->node))
+            ListElement *reports_root = sensor->readings_to_report;
+            for (reports_root = reports_root->next; reports_root != NULL; reports_root = reports_root->next) {
+                if (!report_reading_data(url, (reading_data*) reports_root->node))
                     rv = false;
             }
-            list_clear(s->sensors[sensor_index].readings_to_report);
+            list_clear(sensor->readings_to_report);
 
             free(url);
         }
