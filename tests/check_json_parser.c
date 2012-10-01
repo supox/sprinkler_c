@@ -10,6 +10,7 @@
 #include <assert.h>
 #include "json_parser.h"
 #include "config.h"
+#include "alarm.h"
 
 /*
  * Simple C Test Suite
@@ -44,7 +45,7 @@ void test_json_parse_alarms() {
     Sensor pSensors[MAX_NUMBER_OF_SENSORS];
     size_t iSensorsLength = 0;
     bool result;
-    AlarmList* root;
+    ListElement* root;
     
     for(i = 0; i < MAX_NUMBER_OF_SENSORS ; i++)
         sensor_init(&pSensors[i], MOCK);    
@@ -57,8 +58,8 @@ void test_json_parse_alarms() {
     for(i = 0 ; i < 3 ; i++ ) {
         assert(root->next != NULL);
         root = root->next;
-        assert(root->node->alarm_value == values[i]);
-        assert(root->node->type == types[i]);
+        assert(((Alarm*)root->node)->alarm_value == values[i]);
+        assert(((Alarm*)root->node)->type == types[i]);
     }
 }
 

@@ -37,6 +37,33 @@ bool list_remove(ListElement* root, void *node) {
     return false;
 }
 
+bool list_clear(ListElement* root) {
+    ListElement *current_elm, *next_elm;
+    
+    current_elm = root->next;
+    root->next = NULL;
+    
+    while(current_elm != NULL) {
+       next_elm = current_elm->next;
+       free(current_elm->node);
+       free(current_elm);
+       current_elm = next_elm;
+    }
+    return true;
+}
+
+bool list_empty(ListElement* root) {
+    return root->next == NULL;
+}
+
+size_t list_count(ListElement* root) {
+    size_t count = 0;
+    for ( ; root->next != NULL ; root = root->next ) {
+        count++;
+    }
+    return count;
+}
+
 ListElement* list_create() {
     ListElement *root = (ListElement*)malloc(sizeof(ListElement));
     if(root) {
@@ -47,14 +74,8 @@ ListElement* list_create() {
 }
 
 bool list_delete(ListElement* root) {
-    ListElement* next_root;
-    
-    while(root != NULL) {
-       next_root = root->next;
-       free(root->node);
-       free(root);
-       root = next_root;
-    }
-    
+    list_clear(root);
+    free(root->node);
+    free(root);
     return true;
 }

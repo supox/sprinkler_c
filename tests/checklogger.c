@@ -15,7 +15,7 @@
  * Simple C Test Suite
  */
 
-void test1() {
+void test_sensor() {
     printf("checklogger test 1\n");
     add_to_log("Test log", NORMAL);
     add_to_log("Test Error", ERROR);
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     printf("%%SUITE_STARTED%%\n");
 
     printf("%%TEST_STARTED%% test1 (checklogger)\n");
-    test1();
+    test_sensor();
     printf("%%TEST_FINISHED%% time=0 test1 (checklogger) \n");
 
     printf("%%SUITE_FINISHED%% time=0\n");

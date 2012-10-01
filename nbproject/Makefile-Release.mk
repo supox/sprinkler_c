@@ -44,6 +44,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/jsmn.o \
 	${OBJECTDIR}/alarm.o \
 	${OBJECTDIR}/communication.o \
+	${OBJECTDIR}/reading_data.o \
 	${OBJECTDIR}/sensor_type.o \
 	${OBJECTDIR}/time_functions.o \
 	${OBJECTDIR}/queue.o \
@@ -141,6 +142,11 @@ ${OBJECTDIR}/communication.o: communication.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/communication.o communication.c
+
+${OBJECTDIR}/reading_data.o: reading_data.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/reading_data.o reading_data.c
 
 ${OBJECTDIR}/sensor_type.o: sensor_type.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -428,6 +434,19 @@ ${OBJECTDIR}/communication_nomain.o: ${OBJECTDIR}/communication.o communication.
 	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/communication_nomain.o communication.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/communication.o ${OBJECTDIR}/communication_nomain.o;\
+	fi
+
+${OBJECTDIR}/reading_data_nomain.o: ${OBJECTDIR}/reading_data.o reading_data.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/reading_data.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/reading_data_nomain.o reading_data.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/reading_data.o ${OBJECTDIR}/reading_data_nomain.o;\
 	fi
 
 ${OBJECTDIR}/sensor_type_nomain.o: ${OBJECTDIR}/sensor_type.o sensor_type.c 

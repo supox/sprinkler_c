@@ -23,6 +23,7 @@ typedef struct {
     size_t number_of_sensors;
     time_t last_report_time;
     Sensor sensors[MAX_NUMBER_OF_SENSORS];
+    bool has_alarmed;
     // Queue message_queues;
     
     // TODO - add valves

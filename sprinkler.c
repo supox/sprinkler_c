@@ -3,22 +3,23 @@
 #include "string_buffer.h"
 #include "url_loader.h"
 #include "time_functions.h"
+#include "reading_data.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory.h>
 
 static bool sprinkler_load_config(Sprinkler* s);
+static bool report_reading_data(const char* url, const reading_data* data);
 
 bool sprinkler_read_sensors(Sprinkler* s) {
     bool ret = true;
-    bool need_to_report = false;
     size_t iSensorIndex;
     for (iSensorIndex = 0; iSensorIndex < s->number_of_sensors; iSensorIndex++) {
         bool will_alarm = false;
         double value = 0;
         ret &= sensor_get_reading(&s->sensors[iSensorIndex], &value, &will_alarm);
-        need_to_report |= will_alarm;
+        s->has_alarmed |= will_alarm;
     }
     return ret;
 }
@@ -48,6 +49,7 @@ bool sprinkler_initialize(Sprinkler* s) {
     s->main_valf = -1;
     s->number_of_sensors = 0;
     s->last_report_time = 0;
+    s->has_alarmed = false;
     for (iSensorIndex = 0; iSensorIndex < MAX_NUMBER_OF_SENSORS; iSensorIndex++) {
         sensor_init(&(s->sensors[iSensorIndex]), MOCK);
     }
@@ -77,41 +79,39 @@ static bool sprinkler_load_config(Sprinkler* s) {
 }
 
 bool sprinkler_needs_to_report_reading(Sprinkler *s) {
-    time_t current_time = get_time();
-    return (current_time - s->last_report_time >= s->refresh_rate);
+    time_t current_time;
+    if (s->has_alarmed)
+        return true;
+
+    current_time = get_time();
+    return (current_time >= s->last_report_time + s->refresh_rate);
 }
 
 bool sprinkler_report_reading(Sprinkler *s) {
     int str_length = 0;
     bool rv = true;
     size_t sensor_index;
-    
-    add_to_log("sprinkler_report_reading : Reporting readings.", DUMP);
-    
-    for (sensor_index = 0; sensor_index < s->number_of_sensors; sensor_index++) {
-        char *url=NULL, *buf=NULL;
 
+    add_to_log("sprinkler_report_reading : Reporting readings.", DUMP);
+
+    for (sensor_index = 0; sensor_index < s->number_of_sensors; sensor_index++) {
+        char *url = NULL, *buf = NULL;
+
+        if (list_empty(s->sensors[sensor_index].readings_to_report))
+            continue;
+
+        // Build URL
         str_length = asprintf(&url, SENSOR_URL_FORMAT, s->sensors[sensor_index].id);
         if (str_length > 0) {
-            str_length = asprintf(&buf, SENSOR_READING_JSON_FORMAT, s->sensors[sensor_index].last_reading_value, s->sensors[sensor_index].last_reading_time);
-            if (str_length > 0) {
-                bool post_result;
-                StringBuffer *response = string_buffer_create();
-                StringBuffer request;
-                request.memory = buf;
-                request.size = (size_t)str_length;
-                request.pos=0;
-                post_result = post_web_page(url, &request, response);
-                
-                if(!post_result)
+            
+            // Report all readings
+            ListElement *root = s->sensors[sensor_index].readings_to_report;
+            for (root = root->next; root != NULL; root = root->next) {
+                reading_data* data = (reading_data*) root->node;
+                if (!report_reading_data(url, (reading_data*) root->node))
                     rv = false;
-                
-                if(strcmp(response->memory, ACK_STRING) != 0)
-                    rv = false;
-                
-                string_buffer_delete(response);
-                free(buf);
             }
+            list_clear(s->sensors[sensor_index].readings_to_report);
 
             free(url);
         }
@@ -120,8 +120,35 @@ bool sprinkler_report_reading(Sprinkler *s) {
             return false;
     }
 
-    if(rv)
+    if (rv) {
         s->last_report_time = get_time();
-    
+        s->has_alarmed = false; // reported about the alarm, turn to false.
+    }
+
+    return rv;
+}
+
+bool report_reading_data(const char* url, const reading_data* data) {
+    char *buf;
+    int str_length;
+    bool post_result;
+    StringBuffer request;
+    StringBuffer *response;
+    bool rv;
+
+    str_length = asprintf(&buf, SENSOR_READING_JSON_FORMAT, data->reading_value, data->reading_time);
+    if (str_length < 0)
+        return false;
+
+    response = string_buffer_create();
+
+    request.memory = buf;
+    request.size = (size_t) str_length;
+    request.pos = 0;
+    rv = post_web_page(url, &request, response);
+    rv &= (strcmp(response->memory, ACK_STRING) == 0);
+
+    string_buffer_delete(response);
+    free(buf);
     return rv;
 }

@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     int i;
     init();
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 120; i++) {
         if (read_sensors()) {
             report_readings();
         }

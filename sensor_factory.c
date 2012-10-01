@@ -7,15 +7,17 @@
 // Factory to read_sensor
 bool sensor_factory_init(Sensor* s) {
     switch(s->type) {
-        case MOCK : default:
+        case MOCK:
             s->read_sensor = sensor_mock_reader;
-            break;
+            return true;
         case BATTERY:
             s->read_sensor = sensor_battery_reader;
-            break;
+            return true;
         case WATER_READER:
             s->read_sensor = sensor_water_reader;
-            break;
+            return true;
+        default:
+            return false;
         
     }
 }

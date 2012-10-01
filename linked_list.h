@@ -9,6 +9,7 @@
 #define	LINKED_LIST_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 struct list_el{
     void* node;
@@ -21,6 +22,10 @@ typedef struct list_el ListElement;
 bool list_add(ListElement* root, void* node);
 bool list_contains(ListElement* root, void* node);
 bool list_remove(ListElement* root, void *node);
+bool list_empty(ListElement* root);
+bool list_clear(ListElement* root);
+size_t list_count(ListElement* root);
+
 ListElement* list_create();
 bool list_delete(ListElement* root);
 

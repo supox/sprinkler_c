@@ -45,6 +45,8 @@
       <itemPath>battery_sensor.h</itemPath>
       <itemPath>mock_sensor.c</itemPath>
       <itemPath>mock_sensor.h</itemPath>
+      <itemPath>reading_data.c</itemPath>
+      <itemPath>reading_data.h</itemPath>
       <itemPath>sensor.c</itemPath>
       <itemPath>sensor.h</itemPath>
       <itemPath>sensor_factory.c</itemPath>

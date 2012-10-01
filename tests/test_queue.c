@@ -24,7 +24,7 @@ bool AreEqual(MessageDescriptor *m1, MessageDescriptor *m2) {
     );
 }
 
-void test1() {
+void test_sensor() {
     const int MaxElements = 10;
     MessageDescriptor message1, message2;
     
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
     printf("%%SUITE_STARTED%%\n");
 
     printf("%%TEST_STARTED%% test1 (test_queue)\n");
-    test1();
+    test_sensor();
     printf("%%TEST_FINISHED%% time=0 test1 (test_queue) \n");
 
     printf("%%TEST_STARTED%% test2 (test_queue)\n");

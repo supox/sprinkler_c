@@ -1,11 +1,12 @@
 #include "sensor.h"
 #include "time_functions.h"
 #include "config.h"
+#include "reading_data.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-static bool sensor_reading_if_needed(Sensor *s);
+static bool sensor_add_reading_if_needed(Sensor *s, const bool will_alarm);
 
 bool sensor_get_reading(Sensor* s, double* value, bool *will_alarm) {
     bool ret = s->read_sensor(s, value);
@@ -13,15 +14,18 @@ bool sensor_get_reading(Sensor* s, double* value, bool *will_alarm) {
         s->last_reading_value = *value;
         s->last_reading_time = get_time();
         *will_alarm = alarm_list_will_alarm(s->alarms, s->last_reading_value);
-        ret = sensor_reading_if_needed(s);
+        ret = sensor_add_reading_if_needed(s, *will_alarm);
     }
     return ret;
 }
 
 
-bool sensor_reading_if_needed(Sensor *s) {
-    if(s->last_reading_time > s->last_saved_reading_time + s->report_reading_time_delta) {
+bool sensor_add_reading_if_needed(Sensor *s, const bool will_alarm) {
+    if(will_alarm || s->last_reading_time > s->last_saved_reading_time + s->report_reading_time_delta) {
         // Save reading to queue:
+        reading_data* data = reading_data_create(s->last_reading_time, s->last_reading_value);
+        list_add(s->readings_to_report, (void*)data);
+        s->last_saved_reading_time = s->last_reading_time;
     }
     return true;
 }
@@ -45,12 +49,18 @@ bool sensor_init(Sensor* s, enum sensor_type type) {
     s->report_reading_time_delta = DEFAULT_SENSOR_READING_TIME_DELTA_SECONDS;
     s->type = type;
     s->alarms = list_create();
+    s->readings_to_report = list_create();
     return sensor_factory_init(s);
 }
 
 void sensor_delete(Sensor* s) {
-    list_delete(s->alarms);
+    sensor_free_elements(s);
     free(s);
+}
+
+void sensor_free_elements(Sensor* s) {
+    list_delete(s->alarms);
+    list_delete(s->readings_to_report);
 }
 
 Sensor** sensor_create_array(const size_t length) {
