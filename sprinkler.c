@@ -4,6 +4,7 @@
 #include "url_loader.h"
 #include "time_functions.h"
 #include "reading_data.h"
+#include "valf.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -40,6 +41,7 @@ Sprinkler* sprinkler_create() {
 
 void sprinkler_free_elements(Sprinkler* s) {
     list_delete(s->sensors);
+    list_delete(s->valves);
 }
 
 void sprinkler_delete(Sprinkler* s) {
@@ -52,23 +54,24 @@ bool sprinkler_initialize(Sprinkler* s) {
     s->refresh_rate = DEFAULT_REFRESH_RATE_SECONDS;
     s->main_valf_delay = 0;
     s->main_valf = -1;
-    s->number_of_sensors = 0;
     s->last_report_time = 0;
     s->has_alarmed = false;
     s->sensors = sensor_create_list();
+    s->valves  = valf_create_list();
 
     return sprinkler_load_config(s);
 }
 
 static bool sprinkler_load_config(Sprinkler* s) {
     bool ret = false;
-    StringBuffer *sb1, *sb2;
+    StringBuffer *sb1, *sb2, *sb3;
     sb1 = string_buffer_create();
     sb2 = string_buffer_create();
+    sb3 = string_buffer_create();
 
     ret = get_web_page(SENSORS_CONFIGURATION_URL, sb1);
     if (ret) {
-        ret = json_parse_sensors(sb1->memory, s->sensors, &s->number_of_sensors, MAX_NUMBER_OF_SENSORS);
+        ret = json_parse_sensors(sb1->memory, s->sensors);
     }
     if (ret) {
         ret = get_web_page(SPRINKLER_CONFIGURATION_URL, sb2);
@@ -76,8 +79,15 @@ static bool sprinkler_load_config(Sprinkler* s) {
     if (ret) {
         ret = json_parse_sprinkler_configuration(sb2->memory, s);
     }
+    if (ret) {
+        ret = get_web_page(SPRINKLER_VALVES_URL, sb3);
+    }
+    if (ret) {
+        ret = json_parse_valves(sb3->memory, s->valves);
+    }
     string_buffer_delete(sb1);
     string_buffer_delete(sb2);
+    string_buffer_delete(sb3);
     return ret;
 }
 

@@ -24,6 +24,7 @@
 #define SPRINKLER_URL SERVER_URL "sprinklers/1/"
 #define SPRINKLER_CONFIGURATION_URL SPRINKLER_URL  "configuration/"
 #define SENSORS_CONFIGURATION_URL SPRINKLER_URL "sensors/"
+#define SPRINKLER_VALVES_URL SPRINKLER_URL "valves/"
 #define SENSOR_URL_FORMAT SPRINKLER_URL "sensors/%d/create_reading/"
 #define SENSOR_READING_JSON_FORMAT "{\"sensor_reading\":{\"sensor_value\":%.0lf,\"read_time\":%u}}"
 #define ACK_STRING "{\"result\": \"OK\"}"

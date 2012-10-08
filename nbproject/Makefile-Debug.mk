@@ -55,7 +55,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/sensor.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/json_parser.o \
-	${OBJECTDIR}/sprinkler.o
+	${OBJECTDIR}/sprinkler.o \
+	${OBJECTDIR}/valf.o
 
 # Test Directory
 TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
@@ -202,6 +203,11 @@ ${OBJECTDIR}/sprinkler.o: sprinkler.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/sprinkler.o sprinkler.c
+
+${OBJECTDIR}/valf.o: valf.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/valf.o valf.c
 
 # Subprojects
 .build-subprojects:
@@ -590,6 +596,19 @@ ${OBJECTDIR}/sprinkler_nomain.o: ${OBJECTDIR}/sprinkler.o sprinkler.c
 	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/sprinkler_nomain.o sprinkler.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/sprinkler.o ${OBJECTDIR}/sprinkler_nomain.o;\
+	fi
+
+${OBJECTDIR}/valf_nomain.o: ${OBJECTDIR}/valf.o valf.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/valf.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -g -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/valf_nomain.o valf.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/valf.o ${OBJECTDIR}/valf_nomain.o;\
 	fi
 
 # Run Test Targets

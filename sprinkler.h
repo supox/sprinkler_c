@@ -20,9 +20,9 @@ typedef struct {
     int refresh_rate;
     int main_valf_delay;
     int main_valf;
-    size_t number_of_sensors;
     time_t last_report_time;
     ListElement* sensors;
+    ListElement* valves;
     bool has_alarmed;
     // Queue message_queues;
     

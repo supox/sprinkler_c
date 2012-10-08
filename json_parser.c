@@ -3,6 +3,7 @@
 #include "config.h"
 #include "logger.h"
 #include "alarm.h"
+#include "valf.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -25,12 +26,13 @@ static bool json_parse(const char *json_buffer, jsmntok_t *tokens);
 static int find_json_array_token(jsmntok_t *tokens, const char* json_buffer, const char* token_key);
 static bool token_to_int(const char* json_buffer, jsmntok_t *token, int *value);
 static bool token_to_double(const char* json_buffer, jsmntok_t *token, double *value);
-static bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors);
-static bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors);
+static bool json_parse_sensors_internal(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors);
+static bool json_parse_alarms_internal(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors);
+
+static jsmntok_t tokens[MAX_NUMBER_OF_TOKENS];
 
 bool json_parse_sprinkler_configuration(const char* json_buffer, Sprinkler* sprinkler) {
     int iCurrentTokenIndex;
-    jsmntok_t tokens[MAX_NUMBER_OF_TOKENS];
 
     // Parse json string
     if (!json_parse(json_buffer, tokens)) {
@@ -68,24 +70,80 @@ bool json_parse_sprinkler_configuration(const char* json_buffer, Sprinkler* spri
 }
 
 bool json_parse_sensors(const char* json_buffer, ListElement* sensors) {
-    jsmntok_t tokens[MAX_NUMBER_OF_TOKENS];
-
     // Parse json string
     if (!json_parse(json_buffer, tokens)) {
         add_to_log("json_parse_sensors: Could not parse json.", ERROR);
         return false;
     }
 
-    if (!json_parse_sensors_int(tokens, json_buffer, sensors)) {
+    if (!json_parse_sensors_internal(tokens, json_buffer, sensors)) {
         add_to_log("json_parse_sensors: Could not find sensors data.", ERROR);
         return false;
     }
 
-    if (!json_parse_alarms_int(tokens, json_buffer, sensors)) {
+    if (!json_parse_alarms_internal(tokens, json_buffer, sensors)) {
         add_to_log("json_parse_sensors: Could not find alarms data.", ERROR);
         return false;
     }
     return true;
+}
+
+bool json_parse_valves(const char* json_buffer, ListElement* valves) {
+    int iCurrentTokenIndex;
+    int iValfIndex;
+
+    // Parse json string
+    if (!json_parse(json_buffer, tokens)) {
+        add_to_log("json_parse_valves: Could not parse json.", ERROR);
+        return false;
+    }
+
+    // expected json : [{"id":4,"port_index":1},{"id":6,"port_index":2},{"id":5,"port_index":4}]
+    if (tokens[0].size <= 0 || tokens[0].type != JSMN_ARRAY) {
+        add_to_log("json_parse_valves: Could not parse json.", ERROR);
+        return false;
+    }
+    iCurrentTokenIndex = 1;
+    
+    // iterate of all tokens, try to build valves
+    for (iValfIndex = 0 ; iValfIndex < tokens[0].size; iValfIndex++) {
+        const int iStartTokenIndex = iCurrentTokenIndex+1;
+        const int iEndTokenIndex = iCurrentTokenIndex+tokens[iCurrentTokenIndex].size;
+        int port_index =-1, id=-1, value;
+        if(tokens[iCurrentTokenIndex].type != JSMN_OBJECT ) {
+            iCurrentTokenIndex++;
+            continue;
+        }
+        iCurrentTokenIndex++;
+        
+        for(iCurrentTokenIndex = iStartTokenIndex; iCurrentTokenIndex <= iEndTokenIndex; ) {
+            if (tokens[iCurrentTokenIndex].type != JSMN_STRING) // Must be an error...
+                break;
+
+            if (tokens[iCurrentTokenIndex + 1].type != JSMN_PRIMITIVE) // Must be an error...
+                break;
+
+            // Read the value
+            if (!token_to_int(json_buffer, &tokens[iCurrentTokenIndex + 1], &value))
+                break;
+
+            if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], ID_TAG)) { // Id tag
+                id = value;
+            } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], PORT_INDEX_TAG)) { // Port index tag
+                port_index = value;
+            } // else - ignore this key.
+
+            iCurrentTokenIndex += 2;
+        }
+        
+        if(id>=0 && port_index>=0) {
+            // Create valf
+            Valf* v = valf_create();
+            v->id = id;
+            v->port_index = port_index;
+            list_add(valves, v);
+        }
+    }    
 }
 
 bool json_parse(const char *json_buffer, jsmntok_t *tokens) {
@@ -151,7 +209,7 @@ bool token_to_alarm_type(const char* json_buffer, jsmntok_t *token, enum AlarmTy
     return false;
 }
 
-bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
+bool json_parse_sensors_internal(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
     int iSensorsArrayTokenIndex, iCurrentTokenIndex;
 
     // Find sensors array token:
@@ -207,7 +265,7 @@ bool json_parse_sensors_int(jsmntok_t* tokens, const char* json_buffer, ListElem
     return true;
 }
 
-bool json_parse_alarms_int(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
+bool json_parse_alarms_internal(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
     int max_port_index = 0;
     int iAlarmsTokenIndex, iCurrentTokenIndex;
     Sensor** sensors_hash;
