@@ -14,7 +14,7 @@
 
 #include "message_descriptor.h"
 
-typedef MessageDescriptor ElementType;
+typedef MessageDescriptor QueueElementType;
 
 struct QueueRecord;
 typedef struct QueueRecord *Queue;
@@ -25,8 +25,8 @@ int Count(Queue Q);
 Queue queue_create(int MaxElements);
 void queue_delete(Queue Q);
 void MakeEmpty(Queue Q);
-void Enqueue(Queue Q, ElementType X);
-ElementType Front(Queue Q);
-ElementType Dequeue(Queue Q);
+void Enqueue(Queue Q, QueueElementType X);
+QueueElementType Front(Queue Q);
+QueueElementType Dequeue(Queue Q);
 
 #endif  /* _Queue_h */

@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/sensor_factory.o \
+	${OBJECTDIR}/Irrigation.o \
 	${OBJECTDIR}/json_formatter.o \
 	${OBJECTDIR}/water_sensor.o \
 	${OBJECTDIR}/url_loader.o \
@@ -50,6 +51,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/queue.o \
 	${OBJECTDIR}/StringBuffer.o \
 	${OBJECTDIR}/linked_list.o \
+	${OBJECTDIR}/token_vector.o \
 	${OBJECTDIR}/mock_sensor.o \
 	${OBJECTDIR}/battery_sensor.o \
 	${OBJECTDIR}/sensor.o \
@@ -63,6 +65,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
@@ -103,6 +106,11 @@ ${OBJECTDIR}/sensor_factory.o: sensor_factory.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/sensor_factory.o sensor_factory.c
+
+${OBJECTDIR}/Irrigation.o: Irrigation.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Irrigation.o Irrigation.c
 
 ${OBJECTDIR}/json_formatter.o: json_formatter.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -173,6 +181,11 @@ ${OBJECTDIR}/linked_list.o: linked_list.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/linked_list.o linked_list.c
+
+${OBJECTDIR}/token_vector.o: token_vector.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/token_vector.o token_vector.c
 
 ${OBJECTDIR}/mock_sensor.o: mock_sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -258,6 +271,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/test_spri
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/test_token_vector.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
+
 
 ${TESTDIR}/tests/alarm_test.o: tests/alarm_test.c 
 	${MKDIR} -p ${TESTDIR}/tests
@@ -325,6 +342,12 @@ ${TESTDIR}/tests/test_sprinkler.o: tests/test_sprinkler.c
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_sprinkler.o tests/test_sprinkler.c
 
 
+${TESTDIR}/tests/test_token_vector.o: tests/test_token_vector.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_token_vector.o tests/test_token_vector.c
+
+
 ${OBJECTDIR}/sensor_factory_nomain.o: ${OBJECTDIR}/sensor_factory.o sensor_factory.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/sensor_factory.o`; \
@@ -336,6 +359,19 @@ ${OBJECTDIR}/sensor_factory_nomain.o: ${OBJECTDIR}/sensor_factory.o sensor_facto
 	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/sensor_factory_nomain.o sensor_factory.c;\
 	else  \
 	    ${CP} ${OBJECTDIR}/sensor_factory.o ${OBJECTDIR}/sensor_factory_nomain.o;\
+	fi
+
+${OBJECTDIR}/Irrigation_nomain.o: ${OBJECTDIR}/Irrigation.o Irrigation.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Irrigation.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/Irrigation_nomain.o Irrigation.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Irrigation.o ${OBJECTDIR}/Irrigation_nomain.o;\
 	fi
 
 ${OBJECTDIR}/json_formatter_nomain.o: ${OBJECTDIR}/json_formatter.o json_formatter.c 
@@ -520,6 +556,19 @@ ${OBJECTDIR}/linked_list_nomain.o: ${OBJECTDIR}/linked_list.o linked_list.c
 	    ${CP} ${OBJECTDIR}/linked_list.o ${OBJECTDIR}/linked_list_nomain.o;\
 	fi
 
+${OBJECTDIR}/token_vector_nomain.o: ${OBJECTDIR}/token_vector.o token_vector.c 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/token_vector.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.c) -O2 -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/token_vector_nomain.o token_vector.c;\
+	else  \
+	    ${CP} ${OBJECTDIR}/token_vector.o ${OBJECTDIR}/token_vector_nomain.o;\
+	fi
+
 ${OBJECTDIR}/mock_sensor_nomain.o: ${OBJECTDIR}/mock_sensor.o mock_sensor.c 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/mock_sensor.o`; \
@@ -615,6 +664,7 @@ ${OBJECTDIR}/valf_nomain.o: ${OBJECTDIR}/valf.o valf.c
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \

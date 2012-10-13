@@ -39,6 +39,10 @@ void comm_init(CommunicationDescriptor* comm) {
 }
 
 void comm_delete(CommunicationDescriptor* comm) {
+    comm_free_elements(comm);
     free(comm);
 }
 
+void comm_free_elements(CommunicationDescriptor* comm) {
+    
+}

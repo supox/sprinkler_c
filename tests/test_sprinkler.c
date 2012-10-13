@@ -22,12 +22,12 @@ void testSprinkler_init() {
 
 }
 
-void testSprinkler_read_sensors() {
+void test_sprinkler_do_tasks() {
     bool result;
     Sprinkler* s = sprinkler_create();
     assert(s != NULL);
     
-    result = sprinkler_read_sensors(s);
+    result = sprinkler_do_tasks(s);
     assert(result); // TODO - check result
     
     sprinkler_delete(s);
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     printf("%%TEST_FINISHED%% time=0 testSprinkler_load_config (test_sprinkler)\n");
 
     printf("%%TEST_STARTED%%  testSprinkler_read_sensors (test_sprinkler)\n");
-    testSprinkler_read_sensors();
+    test_sprinkler_do_tasks();
     printf("%%TEST_FINISHED%% time=0 testSprinkler_read_sensors (test_sprinkler)\n");
 
     printf("%%SUITE_FINISHED%% time=0\n");

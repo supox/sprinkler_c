@@ -19,7 +19,7 @@ struct QueueRecord {
   int Front;
   int Rear;
   int Size;
-  ElementType *Array;
+  QueueElementType *Array;
 };
 
 int IsEmpty(Queue Q) {
@@ -45,7 +45,7 @@ Queue queue_create(int MaxElements) {
     FatalError("CreateQueue Error: Unable to allocate more memory.");
   }
 
-  Q->Array = malloc( sizeof(ElementType) * MaxElements );
+  Q->Array = malloc( sizeof(QueueElementType) * MaxElements );
   if (Q->Array == NULL) {
     FatalError("CreateQueue Error: Unable to allocate more memory.");
   }
@@ -78,7 +78,7 @@ static int Succ(int Value, Queue Q) {
   return Value;
 }
 
-void Enqueue(Queue Q, ElementType X) {
+void Enqueue(Queue Q, QueueElementType X) {
 
   if (IsFull(Q)) {
     Error("Enqueue Error: The queue is full.");
@@ -90,7 +90,7 @@ void Enqueue(Queue Q, ElementType X) {
 
 }
 
-ElementType Front(Queue Q) {
+QueueElementType Front(Queue Q) {
 
   if (!IsEmpty(Q)) {
     return Q->Array[Q->Front];
@@ -98,14 +98,14 @@ ElementType Front(Queue Q) {
   Error("Front Error: The queue is empty.");
 
   /* Return value to avoid warnings from the compiler */
-  ElementType ret;
+  QueueElementType ret;
   return ret;
 
 }
 
-ElementType Dequeue(Queue Q) {
+QueueElementType Dequeue(Queue Q) {
 
-  ElementType X;
+  QueueElementType X;
 
   if (IsEmpty(Q)) {
     Error("FrontAndDequeue Error: The queue is empty.");

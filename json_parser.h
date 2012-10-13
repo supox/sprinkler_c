@@ -13,6 +13,7 @@
 
 bool json_parse_sensors(const char* json_buffer, ListElement* sensors);
 bool json_parse_valves(const char* json_buffer, ListElement* valves);
+bool json_parse_irrigations(const char* json_buffer, ListElement* irrigations);
 bool json_parse_sprinkler_configuration(const char* json_buffer, Sprinkler* sprinkler);
 
 #endif	/* JSON_PARSER_H */

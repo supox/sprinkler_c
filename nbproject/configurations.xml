@@ -9,9 +9,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>MacrosHelper.h</itemPath>
       <itemPath>communication.h</itemPath>
       <itemPath>config.h</itemPath>
-      <itemPath>curl_wrapper.h</itemPath>
       <itemPath>logger.h</itemPath>
       <itemPath>message_descriptor.h</itemPath>
       <itemPath>message_type.h</itemPath>
@@ -20,15 +20,17 @@
       <itemPath>string_buffer.h</itemPath>
       <itemPath>time_functions.h</itemPath>
       <itemPath>url_loader.h</itemPath>
-      <itemPath>valf.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f1" displayName="Json" projectFiles="true">
       <itemPath>jsmn.c</itemPath>
       <itemPath>jsmn.h</itemPath>
+      <itemPath>jsmntok_t.h</itemPath>
       <itemPath>json_formatter.c</itemPath>
       <itemPath>json_formatter.h</itemPath>
       <itemPath>json_parser.c</itemPath>
       <itemPath>json_parser.h</itemPath>
+      <itemPath>token_vector.c</itemPath>
+      <itemPath>token_vector.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f4" displayName="LinkedList" projectFiles="true">
       <itemPath>linked_list.c</itemPath>
@@ -66,7 +68,12 @@
       <itemPath>sprinkler.c</itemPath>
       <itemPath>time_functions.c</itemPath>
       <itemPath>url_loader.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f5" displayName="Valves" projectFiles="true" kind="ROOT">
+      <itemPath>Irrigation.c</itemPath>
+      <itemPath>Irrigation.h</itemPath>
       <itemPath>valf.c</itemPath>
+      <itemPath>valf.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -138,6 +145,12 @@
                      kind="TEST">
         <itemPath>tests/test_sprinkler.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f10"
+                     displayName="Test Token Vector"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/test_token_vector.c</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -165,7 +178,6 @@
           </incDir>
         </ccTool>
         <linkerTool>
-          <output>${TESTDIR}/TestFiles/f10</output>
           <linkerLibItems>
             <linkerLibLibItem>curl</linkerLibLibItem>
           </linkerLibItems>
@@ -184,6 +196,21 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f1</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f10">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f10</output>
         </linkerTool>
       </folder>
       <folder path="TestFiles/f11">

@@ -1,5 +1,6 @@
 #include "valf.h"
 #include "linked_list.h"
+#include "Irrigation.h"
 #include <stdlib.h>
 
 Valf* valf_create() {
@@ -14,7 +15,10 @@ bool valf_init(Valf* v, const int id, const int port_index) {
     v->port_index = port_index;
     return true;
 }
+
 void valf_delete(Valf* v) {
+    if(v!=NULL)
+        valf_free_elements(v);
     free(v);
 }
 
@@ -27,5 +31,3 @@ ListElement* valf_create_list() {
     list_set_delete_function(root, (delete_function)valf_delete);
     return root;
 }
-
-

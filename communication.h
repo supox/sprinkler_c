@@ -22,6 +22,7 @@ bool comm_recieve_byte(CommunicationDescriptor* comm, char* byte);
 
 CommunicationDescriptor* comm_create();
 void comm_init(CommunicationDescriptor* comm);
+void comm_free_elements(CommunicationDescriptor* comm);
 void comm_delete(CommunicationDescriptor* comm);
 
 #endif	/* COMMUNICATION_H */

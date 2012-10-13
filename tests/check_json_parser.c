@@ -12,6 +12,7 @@
 #include "config.h"
 #include "alarm.h"
 #include "valf.h"
+#include "Irrigation.h"
 
 /*
  * Simple C Test Suite
@@ -71,7 +72,36 @@ void check_parse_valves() {
         Valf* valf = (Valf*)root_valves->node;
         assert(valf->port_index==ports[i]);
         assert(valf->id==ids[i]);
-    }    
+    }
+    
+    list_delete(valves);
+}
+
+void check_parse_irrigations() {
+    const char irrigations_json[]="[{\"start_time\":1350339360,\"valf_id\":4,\"irrigation_mode\":\"time\",\"amount\":2},{\"start_time\":1350339360,\"valf_id\":6,\"irrigation_mode\":\"time\",\"amount\":4},{\"start_time\":1350944160,\"valf_id\":4,\"irrigation_mode\":\"time\",\"amount\":2},{\"start_time\":1350944160,\"valf_id\":6,\"irrigation_mode\":\"volume\",\"amount\":4}]\n\n";
+    const long times[] = {1350339360, 1350339360,  1350944160, 1350944160 };
+    const int ids[] = {4,6,4,6};
+    const enum IrrigationModes modes[] = {TIME, TIME, TIME, VOLUME};
+    const int amounts[] = {2,4,2,4};
+    
+    ListElement* irrigations = irrigation_create_list();
+    int i;
+    bool result;
+    ListElement* root_irrigations;
+        
+    result = json_parse_irrigations(irrigations_json, irrigations);
+    assert(result);
+    assert(list_count(irrigations) == 4);
+    
+    for (i=0, root_irrigations = irrigations->next; root_irrigations != NULL; root_irrigations = root_irrigations->next, ++i) {
+        Irrigation* irrigation = (Irrigation*)root_irrigations->node;
+        assert(irrigation->start_time==times[i]);
+        assert(irrigation->valf_id==ids[i]);
+        assert(irrigation->mode==modes[i]);
+        assert(irrigation->amount==amounts[i]);
+    }
+    
+    list_delete(irrigations);
 }
 
 int main(int argc, char** argv) {
@@ -85,6 +115,10 @@ int main(int argc, char** argv) {
     printf("%%TEST_STARTED%%  check_parse_valves (check_json_parse)\n");
     check_parse_valves();
     printf("%%TEST_FINISHED%% time=0 test_json_parse_sensors (check_json_parse)\n");
+    
+    printf("%%TEST_STARTED%%  check_parse_irrigations (check_json_parse)\n");
+    check_parse_irrigations();
+    printf("%%TEST_FINISHED%% time=0 check_parse_irrigations (check_json_parse)\n");
     
     printf("%%SUITE_FINISHED%% time=0\n");
 

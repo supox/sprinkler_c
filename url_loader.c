@@ -52,7 +52,7 @@ bool send_request(const char* url, StringBuffer* response, StringBuffer* request
         if(IsPost) {
             curl_easy_setopt(curl, CURLOPT_POST, 1);
                 curl_easy_setopt(curl, CURLOPT_READFUNCTION, ReadMemoryCallback);
-                curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (curl_off_t)request->size);            
+                curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (curl_off_t)request->write_pos);            
                 curl_easy_setopt(curl, CURLOPT_READDATA, (void *)request);
         }
         else
@@ -63,7 +63,7 @@ bool send_request(const char* url, StringBuffer* response, StringBuffer* request
         
         /* Check for errors */
         if (res == CURLE_OK) {
-            sprintf(log_buffer, "post_web_page() read %lu bytes.", (long)response->size);
+            sprintf(log_buffer, "post_web_page() read %lu bytes.", (long)response->write_pos);
             add_to_log(log_buffer, DUMP);
             ret = true;
         } else {
@@ -71,6 +71,7 @@ bool send_request(const char* url, StringBuffer* response, StringBuffer* request
                     curl_easy_strerror(res));
             add_to_log(log_buffer, ERROR);
         }
+        curl_slist_free_all(headers); /* free the list again */
         curl_easy_cleanup(curl);
     }
     return ret;    

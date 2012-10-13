@@ -1,19 +1,8 @@
 #ifndef __JSMN_H_
 #define __JSMN_H_
 
-/**
- * JSON type identifier. Basic types are:
- * 	o Object
- * 	o Array
- * 	o String
- * 	o Other primitive: number, boolean (true/false) or null
- */
-typedef enum {
-	JSMN_PRIMITIVE = 0,
-	JSMN_OBJECT = 1,
-	JSMN_ARRAY = 2,
-	JSMN_STRING = 3
-} jsmntype_t;
+#include "jsmntok_t.h"
+#include "token_vector.h"
 
 typedef enum {
 	/* Not enough tokens were provided */
@@ -27,27 +16,11 @@ typedef enum {
 } jsmnerr_t;
 
 /**
- * JSON token description.
- * @param		type	type (object, array, string etc.)
- * @param		start	start position in JSON data string
- * @param		end		end position in JSON data string
- */
-typedef struct {
-	jsmntype_t type;
-	int start;
-	int end;
-	int size;
-#ifdef JSMN_PARENT_LINKS
-	int parent;
-#endif
-} jsmntok_t;
-
-/**
  * JSON parser. Contains an array of token blocks available. Also stores
  * the string being parsed now and current position in that string
  */
 typedef struct {
-	unsigned int pos; /* offset in the JSON string */
+	unsigned int read_pos; /* offset in the JSON string */
 	int toknext; /* next token to allocate */
 	int toksuper; /* suporior token node, e.g parent object or array */
 } jsmn_parser;
@@ -58,10 +31,9 @@ typedef struct {
 void jsmn_init(jsmn_parser *parser);
 
 /**
- * Run JSON parser. It parses a JSON data string into and array of tokens, each describing
+ * Run JSON parser. It parses a JSON data string into and vector of tokens, each describing
  * a single JSON object.
  */
-jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, 
-		jsmntok_t *tokens, unsigned int num_tokens);
+jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, TokenVector *tokens);
 
 #endif /* __JSMN_H_ */

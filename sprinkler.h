@@ -17,21 +17,21 @@
 
 typedef struct {
     int id;
-    int refresh_rate;
+    size_t refresh_rate;
     int main_valf_delay;
     int main_valf;
     time_t last_report_time;
+    time_t last_irrigation_load_time;
     ListElement* sensors;
     ListElement* valves;
+    ListElement* irrigations;
     bool has_alarmed;
     // Queue message_queues;
-    
-    // TODO - add valves
 } Sprinkler;
 
-bool sprinkler_read_sensors(Sprinkler* s);
-bool sprinkler_report_reading(Sprinkler *s);
-bool sprinkler_needs_to_report_reading(Sprinkler *s);
+time_t sprinkler_get_next_task_time(Sprinkler *s);
+bool sprinkler_needs_to_do_tasks(Sprinkler* s);
+bool sprinkler_do_tasks(Sprinkler* s);
 
 bool sprinkler_initialize(Sprinkler* s);
 Sprinkler* sprinkler_create();

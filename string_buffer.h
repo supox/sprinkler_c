@@ -12,8 +12,8 @@
 
 typedef struct {
     char *memory;
-    size_t size;
-    size_t pos;
+    size_t write_pos;
+    size_t read_pos;
 } StringBuffer;
 
 size_t string_buffer_write(StringBuffer* sb, const char* s, const size_t size);
