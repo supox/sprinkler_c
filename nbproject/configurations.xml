@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="84">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="f3" displayName="Alarm" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f3" displayName="Alarm" projectFiles="true">
       <itemPath>alarm.c</itemPath>
       <itemPath>alarm.h</itemPath>
       <itemPath>alarm_type.h</itemPath>
@@ -30,10 +30,7 @@
       <itemPath>json_parser.c</itemPath>
       <itemPath>json_parser.h</itemPath>
     </logicalFolder>
-    <logicalFolder name="f4"
-                   displayName="LinkedList"
-                   projectFiles="true"
-                   kind="ROOT">
+    <logicalFolder name="f4" displayName="LinkedList" projectFiles="true">
       <itemPath>linked_list.c</itemPath>
       <itemPath>linked_list.h</itemPath>
     </logicalFolder>
@@ -157,7 +154,18 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
         <linkerTool>
+          <output>${TESTDIR}/TestFiles/f10</output>
           <linkerLibItems>
             <linkerLibLibItem>curl</linkerLibLibItem>
           </linkerLibItems>
@@ -176,21 +184,6 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f1</output>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f10">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f10</output>
         </linkerTool>
       </folder>
       <folder path="TestFiles/f11">

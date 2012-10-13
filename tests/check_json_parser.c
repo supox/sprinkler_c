@@ -57,7 +57,7 @@ void check_parse_valves() {
     const int ids[]={4,6,5};
     const int ports[]={1,2,4};
     
-    const char valf_json[] = "[{\"id\":4,\"port_index\":1},{\"id\":6,\"port_index\":2},{\"id\":5,\"port_index\":4}]\n";
+    const char valf_json[] = "[{\"id\":4,\"port_index\":1},{\"id\":6, \"garbage\":\"df\", \"port_index\":2},{\"id\":5,\"unknown\": 4, \"port_index\":4}]\n";
     ListElement* valves = valf_create_list();
     int i;
     bool result;

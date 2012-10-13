@@ -18,6 +18,7 @@
 #define MAIN_VALF_DELAY_TAG     "main_valve_delay"
 #define MAIN_VALF_TAG           "main_valf"
 
+// Useful macro to compare between the string of the tag (t) and a string (s).
 #define TOKEN_STRING(js, t, s) \
 	(strncmp(js+(t).start, s, (t).end - (t).start) == 0 \
 	 && strlen(s) == (t).end - (t).start)
@@ -89,8 +90,8 @@ bool json_parse_sensors(const char* json_buffer, ListElement* sensors) {
 }
 
 bool json_parse_valves(const char* json_buffer, ListElement* valves) {
-    int iCurrentTokenIndex;
-    int iValfIndex;
+    int current_token_index;
+    int valf_index;
 
     // Parse json string
     if (!json_parse(json_buffer, tokens)) {
@@ -103,37 +104,43 @@ bool json_parse_valves(const char* json_buffer, ListElement* valves) {
         add_to_log("json_parse_valves: Could not parse json.", ERROR);
         return false;
     }
-    iCurrentTokenIndex = 1;
+    current_token_index = 1;
     
     // iterate of all tokens, try to build valves
-    for (iValfIndex = 0 ; iValfIndex < tokens[0].size; iValfIndex++) {
-        const int iStartTokenIndex = iCurrentTokenIndex+1;
-        const int iEndTokenIndex = iCurrentTokenIndex+tokens[iCurrentTokenIndex].size;
+    for (valf_index = 0 ; valf_index < tokens[0].size; valf_index++) {
+        const int next_valf_token_index = current_token_index+tokens[current_token_index].size;
         int port_index =-1, id=-1, value;
-        if(tokens[iCurrentTokenIndex].type != JSMN_OBJECT ) {
-            iCurrentTokenIndex++;
+        if(tokens[current_token_index].type != JSMN_OBJECT ) {
+            current_token_index += tokens[current_token_index].size + 1;
             continue;
         }
-        iCurrentTokenIndex++;
+        current_token_index++;
         
-        for(iCurrentTokenIndex = iStartTokenIndex; iCurrentTokenIndex <= iEndTokenIndex; ) {
-            if (tokens[iCurrentTokenIndex].type != JSMN_STRING) // Must be an error...
-                break;
+        while(current_token_index < next_valf_token_index) {
+            const int next_object_token = current_token_index + tokens[current_token_index].size+1;
+            if (tokens[current_token_index].type != JSMN_STRING) {// Must be an error...
+                current_token_index = next_object_token;
+                continue;
+            }
 
-            if (tokens[iCurrentTokenIndex + 1].type != JSMN_PRIMITIVE) // Must be an error...
-                break;
+            if (tokens[current_token_index + 1].type != JSMN_PRIMITIVE) {// Must be an error...
+                current_token_index = next_object_token;
+                continue;
+            }
 
             // Read the value
-            if (!token_to_int(json_buffer, &tokens[iCurrentTokenIndex + 1], &value))
-                break;
+            if (!token_to_int(json_buffer, &tokens[current_token_index + 1], &value)) {
+                current_token_index = next_object_token;
+                continue;
+            }
 
-            if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], ID_TAG)) { // Id tag
+            if (TOKEN_STRING(json_buffer, tokens[current_token_index], ID_TAG)) { // Id tag
                 id = value;
-            } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], PORT_INDEX_TAG)) { // Port index tag
+            } else if (TOKEN_STRING(json_buffer, tokens[current_token_index], PORT_INDEX_TAG)) { // Port index tag
                 port_index = value;
             } // else - ignore this key.
 
-            iCurrentTokenIndex += 2;
+            current_token_index += 2;
         }
         
         if(id>=0 && port_index>=0) {
@@ -143,7 +150,7 @@ bool json_parse_valves(const char* json_buffer, ListElement* valves) {
             v->port_index = port_index;
             list_add(valves, v);
         }
-    }    
+    }
 }
 
 bool json_parse(const char *json_buffer, jsmntok_t *tokens) {
@@ -210,49 +217,56 @@ bool token_to_alarm_type(const char* json_buffer, jsmntok_t *token, enum AlarmTy
 }
 
 bool json_parse_sensors_internal(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
-    int iSensorsArrayTokenIndex, iCurrentTokenIndex;
+    int sensors_array_token_index, current_token_index, sensor_index;
 
     // Find sensors array token:
-    iSensorsArrayTokenIndex = find_json_array_token(tokens, json_buffer, SENSORS_TAG);
-    if (iSensorsArrayTokenIndex < 0) {
+    sensors_array_token_index = find_json_array_token(tokens, json_buffer, SENSORS_TAG);
+    if (sensors_array_token_index < 0) {
         return false;
     }
 
+    current_token_index = sensors_array_token_index + 1;
+    
     // iterate of all tokens, try to build sensors
-    for (iCurrentTokenIndex = iSensorsArrayTokenIndex + 1;
-            tokens[iCurrentTokenIndex].end < tokens[iSensorsArrayTokenIndex].end;
-            ) {
+    for (sensor_index = 0 ; sensor_index < tokens[sensors_array_token_index].size; sensor_index++) {
         int id = -1, port_index = -1, value;
-        const size_t number_of_object_tokens = tokens[iCurrentTokenIndex].size;
-        size_t number_of_processed_tokens = 0; 
+        const unsigned int next_sensor_token_index = current_token_index + tokens[current_token_index].size + 1;
 
         // We're expecting something like - {"id":4,"port_index":6}
-        if (tokens[iCurrentTokenIndex].type != JSMN_OBJECT || number_of_object_tokens < 4) {
-            continue; // TODO - add logs
+        if (tokens[current_token_index].type != JSMN_OBJECT || tokens[current_token_index].size < 4) {
+            current_token_index = next_sensor_token_index;
+            continue;
         }
 
-        iCurrentTokenIndex++;
+        current_token_index++;
 
         // First token is the key, the second is the value
-        while ((id < 0 || port_index < 0) && number_of_processed_tokens < number_of_object_tokens) {
-            if (tokens[iCurrentTokenIndex].type != JSMN_STRING) // Must be an error...
-                break;
+        
+        while (current_token_index < next_sensor_token_index) {
+            const unsigned int next_object_token_index = current_token_index + tokens[current_token_index].size + 1;
+            if (tokens[current_token_index].type != JSMN_STRING) { // Must be an error...
+                current_token_index = next_object_token_index;
+                continue;
+            }
 
-            if (tokens[iCurrentTokenIndex + 1].type != JSMN_PRIMITIVE) // Must be an error...
-                break;
+            if (tokens[current_token_index + 1].type != JSMN_PRIMITIVE) { // Must be an error...
+                current_token_index = next_object_token_index;
+                continue;
+            }
 
             // Read the value
-            if (!token_to_int(json_buffer, &tokens[iCurrentTokenIndex + 1], &value))
-                break;
+            if (!token_to_int(json_buffer, &tokens[current_token_index + 1], &value)) {
+                current_token_index = next_object_token_index;
+                continue;
+            }
 
-            if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], ID_TAG)) { // Id tag
+            if (TOKEN_STRING(json_buffer, tokens[current_token_index], ID_TAG)) { // Id tag
                 id = value;
-            } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], PORT_INDEX_TAG)) { // Port index tag
+            } else if (TOKEN_STRING(json_buffer, tokens[current_token_index], PORT_INDEX_TAG)) { // Port index tag
                 port_index = value;
             } // else - ignore this key.
 
-            iCurrentTokenIndex += 2;
-            number_of_processed_tokens += 2;
+            current_token_index += 2;
         }
 
         if (id >= 0 && port_index >= 0) { // Add sensor
@@ -267,7 +281,7 @@ bool json_parse_sensors_internal(jsmntok_t* tokens, const char* json_buffer, Lis
 
 bool json_parse_alarms_internal(jsmntok_t* tokens, const char* json_buffer, ListElement* sensors) {
     int max_port_index = 0;
-    int iAlarmsTokenIndex, iCurrentTokenIndex;
+    int alarm_token_index, current_token_index, alarm_index;
     Sensor** sensors_hash;
     ListElement* root_sensors;
     int sensor_index;
@@ -275,11 +289,14 @@ bool json_parse_alarms_internal(jsmntok_t* tokens, const char* json_buffer, List
     if (list_empty(sensors))
         return true;
 
-    iAlarmsTokenIndex = find_json_array_token(tokens, json_buffer, ALARM_TAG);
-    if (iAlarmsTokenIndex < 0) { // No alarms, should not be a problem.
+    alarm_token_index = find_json_array_token(tokens, json_buffer, ALARM_TAG);
+    if (alarm_token_index < 0) { // No alarms, should not be a problem.
         return true;
     }
 
+    if(tokens[alarm_token_index].type != JSMN_ARRAY)
+        return false;
+    
     // Build sensor hash table - port_index to sensor;
     for (root_sensors = sensors->next; root_sensors != NULL; root_sensors = root_sensors->next) {
         Sensor* sensor = (Sensor*)root_sensors->node;
@@ -300,46 +317,54 @@ bool json_parse_alarms_internal(jsmntok_t* tokens, const char* json_buffer, List
     }
 
     // iterate of all tokens, try to build alarms
-    for (iCurrentTokenIndex = iAlarmsTokenIndex + 1;
-            tokens[iCurrentTokenIndex].end < tokens[iAlarmsTokenIndex].end;
-            ) {
+    for (current_token_index = alarm_token_index + 1, alarm_index = 0;
+            alarm_index < tokens[alarm_token_index].size; alarm_index++ ) {
         int port_index = -1;
         double alarm_value = -9999;
         enum AlarmType alarm_type = INVALID;
-        const size_t number_of_object_tokens = tokens[iCurrentTokenIndex].size;
-        size_t number_of_processed_tokens = 0; 
+        const size_t number_of_object_tokens = tokens[current_token_index].size;
+        const size_t next_alarm_token_index = current_token_index + number_of_object_tokens; 
 
         // We're expecting something like - {"port_index":1,"alarm_value":5.0,"condition_type":"greater_than"}
-        if (tokens[iCurrentTokenIndex].type != JSMN_OBJECT || number_of_object_tokens < 6) {
-            iCurrentTokenIndex++;
+        if (tokens[current_token_index].type != JSMN_OBJECT || number_of_object_tokens < 6) {
+            current_token_index = next_alarm_token_index;
             continue; // TODO - add logs
         }
 
-        iCurrentTokenIndex++;
+        current_token_index++;
 
         // First token is the key, the second is the value
-        while ((port_index < 0 || alarm_type == INVALID || alarm_value == -9999 )
-                && number_of_processed_tokens < number_of_object_tokens) {
-            if (tokens[iCurrentTokenIndex].type != JSMN_STRING) // Must be an error...
-                break;
+        while (current_token_index < next_alarm_token_index) {
+            const unsigned int next_object_token_index = current_token_index + tokens[current_token_index].size + 1;
+            if (tokens[current_token_index].type != JSMN_STRING) {// Must be an error...
+                current_token_index = next_object_token_index;
+                continue;
+            }
 
-            if (tokens[iCurrentTokenIndex + 1].type != JSMN_PRIMITIVE
-                    && tokens[iCurrentTokenIndex + 1].type != JSMN_STRING) // Must be an error...
-                break;
+            if (tokens[current_token_index + 1].type != JSMN_PRIMITIVE
+                    && tokens[current_token_index + 1].type != JSMN_STRING) {// Must be an error...
+                current_token_index = next_object_token_index;
+                continue;
+            }
 
-            if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], ALARM_VALUE_TAG)) { // alarm value tag
-                if (!token_to_double(json_buffer, &tokens[iCurrentTokenIndex + 1], &alarm_value))
+            if (TOKEN_STRING(json_buffer, tokens[current_token_index], ALARM_VALUE_TAG)) { // alarm value tag
+                if (!token_to_double(json_buffer, &tokens[current_token_index + 1], &alarm_value)) {
+                    current_token_index = next_alarm_token_index;
                     break;
-            } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], PORT_INDEX_TAG)) { // Port index tag
-                if (!token_to_int(json_buffer, &tokens[iCurrentTokenIndex + 1], &port_index))
+                }
+            } else if (TOKEN_STRING(json_buffer, tokens[current_token_index], PORT_INDEX_TAG)) { // Port index tag
+                if (!token_to_int(json_buffer, &tokens[current_token_index + 1], &port_index)) {
+                    current_token_index = next_alarm_token_index;
                     break;
-            } else if (TOKEN_STRING(json_buffer, tokens[iCurrentTokenIndex], CONDITION_TYPE_TAG)) { // Condition type tag
-                if (!token_to_alarm_type(json_buffer, &tokens[iCurrentTokenIndex + 1], &alarm_type))
+                }
+            } else if (TOKEN_STRING(json_buffer, tokens[current_token_index], CONDITION_TYPE_TAG)) { // Condition type tag
+                if (!token_to_alarm_type(json_buffer, &tokens[current_token_index + 1], &alarm_type)) {
+                    current_token_index = next_alarm_token_index;
                     break;
+                }
             } // else - ignore this key.
 
-            iCurrentTokenIndex += 2;
-            number_of_processed_tokens+=2;
+            current_token_index += 2;
         }
 
         if (port_index >= 0 && alarm_type != INVALID && alarm_value != -9999 && port_index <= max_port_index) { // Add alarm

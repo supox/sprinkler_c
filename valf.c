@@ -24,7 +24,7 @@ void valf_free_elements(Valf* v) {
 
 ListElement* valf_create_list() {
     ListElement* root = list_create();
-    list_set_delete_function(root, valf_delete);
+    list_set_delete_function(root, (delete_function)valf_delete);
     return root;
 }
 
