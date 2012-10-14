@@ -189,9 +189,7 @@ bool json_parse_valves(const char* json_buffer, ListElement* valves) {
         
         if(id>=0 && port_index>=0) {
             // Create valf
-            Valf* v = valf_create();
-            v->id = id;
-            v->port_index = port_index;
+            Valf* v = valf_create(id, port_index);
             list_add(valves, v);
         }
     }

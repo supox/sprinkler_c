@@ -15,24 +15,24 @@ static bool init_logger_handle() {
     return (logger_handle != NULL);
 }
 
-static void logger_level_to_str(char str[], enum logger_level level){
+static void logger_level_to_str(char str[], enum logger_level level, const size_t max_string_size){
     switch(level) {
     case DUMP:
-        strcpy(str, "DUMP");
+        strncpy(str, "DUMP", max_string_size);
         break;
     case NORMAL: default:
-        strcpy(str, "NORMAL");
+        strncpy(str, "NORMAL", max_string_size);
         break;
     case WARNING:
-        strcpy(str, "WARNING");
+        strncpy(str, "WARNING", max_string_size);
         break;
     case ERROR:
-        strcpy(str, "ERROR");
+        strncpy(str, "ERROR", max_string_size);
         break;
     }
 }
 
-void add_to_log(char* message, enum logger_level level) {
+void add_to_log(const char* message, enum logger_level level) {
     time_t t;
     char logger_level_str[10]="";
     
@@ -42,7 +42,7 @@ void add_to_log(char* message, enum logger_level level) {
     if(logger_handle==NULL)
         if(!init_logger_handle())
             return;
-    logger_level_to_str(logger_level_str, level);
+    logger_level_to_str(logger_level_str, level, 10);
     
     t = get_time();
     fprintf(logger_handle, "%u %s : %s\n", (unsigned)t, logger_level_str, message);

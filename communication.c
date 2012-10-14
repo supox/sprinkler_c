@@ -35,7 +35,7 @@ CommunicationDescriptor* comm_create() {
 }
 
 void comm_init(CommunicationDescriptor* comm) {
-    comm->state = 0;
+    comm->is_open = 0;
 }
 
 void comm_delete(CommunicationDescriptor* comm) {

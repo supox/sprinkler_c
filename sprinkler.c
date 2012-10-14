@@ -39,14 +39,21 @@ bool sprinkler_needs_to_do_tasks(Sprinkler* s) {
 
 bool sprinkler_do_tasks(Sprinkler* s) {
     bool ret = true;
+    
+    // Read sensor state, report if needed.
     ret &= sprinkler_read_sensors(s);
     if(ret && sprinkler_needs_to_report_reading(s)) {
         ret &= sprinkler_report_reading(s);
     }
     
+    // load irrigation instruction if needed.
     if(sprinkler_needs_to_load_irrigations(s)) {
         ret &= sprinkler_load_irrigations_instructions(s);
     }
+    
+    // Update valves mode:
+    if(ret)
+        ret &= valf_do_instructions(s->valves, s->irrigations);
     
     return ret;
 }

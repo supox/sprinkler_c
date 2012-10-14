@@ -17,7 +17,7 @@ enum logger_level {
     ERROR
 };
 
-void add_to_log(char* message, enum logger_level level);
+void add_to_log(const char* message, enum logger_level level);
 void logger_set_dump_mode(bool dump_mode);
 bool logger_get_dump_mode();
 

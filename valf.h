@@ -14,10 +14,15 @@
 typedef struct {
     int id;
     int port_index;
+    bool is_open;
 } Valf;
 
+bool valf_set_state(Valf* v, const bool is_open);
+bool valf_get_state(Valf* v, bool *is_open);
 
-Valf* valf_create();
+bool valf_do_instructions(ListElement* valves_list, ListElement* irrigations_list);
+
+Valf* valf_create(const int id, const int port_index);
 bool valf_init(Valf* v, const int id, const int port_index);
 void valf_delete(Valf*);
 void valf_free_elements(Valf*);

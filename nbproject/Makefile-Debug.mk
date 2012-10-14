@@ -76,7 +76,8 @@ TESTFILES= \
 	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f4 \
 	${TESTDIR}/TestFiles/f9 \
-	${TESTDIR}/TestFiles/f10
+	${TESTDIR}/TestFiles/f10 \
+	${TESTDIR}/TestFiles/f13
 
 # C Compiler Flags
 CFLAGS=
@@ -275,6 +276,10 @@ ${TESTDIR}/TestFiles/f10: ${TESTDIR}/tests/test_token_vector.o ${OBJECTFILES:%.o
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.c}   -o ${TESTDIR}/TestFiles/f10 $^ ${LDLIBSOPTIONS} 
 
+${TESTDIR}/TestFiles/f13: ${TESTDIR}/tests/test_valf.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.c}   -o ${TESTDIR}/TestFiles/f13 $^ ${LDLIBSOPTIONS} 
+
 
 ${TESTDIR}/tests/alarm_test.o: tests/alarm_test.c 
 	${MKDIR} -p ${TESTDIR}/tests
@@ -346,6 +351,12 @@ ${TESTDIR}/tests/test_token_vector.o: tests/test_token_vector.c
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.c) -g -I. -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_token_vector.o tests/test_token_vector.c
+
+
+${TESTDIR}/tests/test_valf.o: tests/test_valf.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -g -I. -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_valf.o tests/test_valf.c
 
 
 ${OBJECTDIR}/sensor_factory_nomain.o: ${OBJECTDIR}/sensor_factory.o sensor_factory.c 
@@ -676,6 +687,7 @@ ${OBJECTDIR}/valf_nomain.o: ${OBJECTDIR}/valf.o valf.c
 	    ${TESTDIR}/TestFiles/f4 || true; \
 	    ${TESTDIR}/TestFiles/f9 || true; \
 	    ${TESTDIR}/TestFiles/f10 || true; \
+	    ${TESTDIR}/TestFiles/f13 || true; \
 	else  \
 	    ./${TEST} || true; \
 	fi

@@ -76,6 +76,7 @@ TESTFILES= \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler
 
 # C Compiler Flags
@@ -275,6 +276,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/test_toke
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler: ${TESTDIR}/tests/test_valf.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.c}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler $^ ${LDLIBSOPTIONS} 
+
 
 ${TESTDIR}/tests/alarm_test.o: tests/alarm_test.c 
 	${MKDIR} -p ${TESTDIR}/tests
@@ -346,6 +351,12 @@ ${TESTDIR}/tests/test_token_vector.o: tests/test_token_vector.c
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_token_vector.o tests/test_token_vector.c
+
+
+${TESTDIR}/tests/test_valf.o: tests/test_valf.c 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_valf.o tests/test_valf.c
 
 
 ${OBJECTDIR}/sensor_factory_nomain.o: ${OBJECTDIR}/sensor_factory.o sensor_factory.c 
@@ -664,6 +675,7 @@ ${OBJECTDIR}/valf_nomain.o: ${OBJECTDIR}/valf.o valf.c
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/sprinkler || true; \

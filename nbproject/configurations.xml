@@ -151,6 +151,12 @@
                      kind="TEST">
         <itemPath>tests/test_token_vector.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f13"
+                     displayName="Test Valf"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/test_valf.c</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -241,6 +247,21 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f12</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f13">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f13</output>
         </linkerTool>
       </folder>
       <folder path="TestFiles/f2">

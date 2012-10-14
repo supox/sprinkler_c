@@ -12,7 +12,7 @@
 #include <stdbool.h>
 
 typedef struct {
-    int state;
+    int is_open;
 } CommunicationDescriptor;
     
 bool comm_send_buffer(CommunicationDescriptor* comm, const char* buffer);
