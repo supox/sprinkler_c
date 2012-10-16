@@ -28,7 +28,8 @@ bool token_vector_add(TokenVector* v, jsmntok_t* t) {
 
     v->tokens[v->size] = *t;
     ++v->size;
-
+    
+    return true;
 }
 
 jsmntok_t token_vector_get(TokenVector* v, size_t index) {

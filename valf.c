@@ -59,7 +59,7 @@ bool valf_do_instructions(ListElement* valves_list, ListElement* irrigations_lis
 }
 
 Valf* valf_create(const int id, const int port_index) {
-    Valf* valf = (Valf*) malloc(sizeof (valf));
+    Valf* valf = (Valf*) malloc(sizeof (Valf));
     if (valf != NULL)
         valf_init(valf, id, port_index);
     return valf;
@@ -69,7 +69,6 @@ bool valf_init(Valf* v, const int id, const int port_index) {
     bool ret = true;
     v->id = id;
     v->port_index = port_index;
-
     
     if(id >= 0 && port_index >= 0) { // Set initial state to close
         v->is_open = true;

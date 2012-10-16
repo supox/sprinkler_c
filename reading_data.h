@@ -13,10 +13,10 @@
 typedef struct {
     time_t reading_time;
     double reading_value;
-} reading_data;
+} ReadingData;
 
-reading_data* reading_data_create(const time_t time, const double value);
-void reading_data_destroy(reading_data* data);
+ReadingData* reading_data_create(const time_t time, const double value);
+void reading_data_destroy(ReadingData* data);
 
 #endif	/* SENSOR_READING_DATA_H */
 

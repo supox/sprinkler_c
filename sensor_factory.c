@@ -18,6 +18,5 @@ bool sensor_factory_init(Sensor* s) {
             return true;
         default:
             return false;
-        
     }
 }

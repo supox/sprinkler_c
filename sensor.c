@@ -3,6 +3,7 @@
 #include "config.h"
 #include "reading_data.h"
 #include "alarm.h"
+#include "sensor_factory.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +25,7 @@ bool sensor_get_reading(Sensor* s, double* value, bool *will_alarm) {
 bool sensor_add_reading_if_needed(Sensor *s, const bool will_alarm) {
     if(will_alarm || s->last_reading_time > s->last_saved_reading_time + s->report_reading_time_delta) {
         // Save reading to queue:
-        reading_data* data = reading_data_create(s->last_reading_time, s->last_reading_value);
+        ReadingData* data = reading_data_create(s->last_reading_time, s->last_reading_value);
         list_add(s->readings_to_report, (void*)data);
         s->last_saved_reading_time = s->last_reading_time;
     }
@@ -67,6 +68,7 @@ void sensor_free_elements(Sensor* s) {
 ListElement* sensor_create_list() {
     ListElement *root = list_create();
     list_set_delete_function(root, (delete_function)sensor_delete);
+    return root;
 }
 
 Sensor** sensor_create_array(const size_t length) {

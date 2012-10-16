@@ -14,7 +14,7 @@
 #include <memory.h>
 
 static bool sprinkler_load_config(Sprinkler* s);
-static bool sensor_report_reading_data(const char* url, const reading_data* data);
+static bool sensor_report_reading_data(const char* url, const ReadingData* data);
 static bool sprinkler_read_sensors(Sprinkler* s);
 static bool sprinkler_report_reading(Sprinkler *s);
 static bool sprinkler_needs_to_report_reading(Sprinkler *s);
@@ -153,14 +153,13 @@ static bool sprinkler_load_config(Sprinkler* s) {
 bool sprinkler_report_reading(Sprinkler *s) {
     int str_length = 0;
     bool rv = true;
-    size_t sensor_index;
 
     add_to_log("sprinkler_report_reading : Reporting readings.", DUMP);
 
     ListElement* root_sensors = s->sensors;
     for (root_sensors = root_sensors->next; root_sensors != NULL; root_sensors = root_sensors->next) {
         Sensor* sensor = (Sensor*)root_sensors->node;
-        char *url = NULL, *buf = NULL;
+        char *url = NULL;
 
         
         if (list_empty(sensor->readings_to_report))
@@ -173,7 +172,7 @@ bool sprinkler_report_reading(Sprinkler *s) {
             // Report all readings
             ListElement *reports_root = sensor->readings_to_report;
             for (reports_root = reports_root->next; reports_root != NULL; reports_root = reports_root->next) {
-                if (!sensor_report_reading_data(url, (reading_data*) reports_root->node))
+                if (!sensor_report_reading_data(url, (ReadingData*) reports_root->node))
                     rv = false;
             }
             list_clear(sensor->readings_to_report);
@@ -193,14 +192,14 @@ bool sprinkler_report_reading(Sprinkler *s) {
     return rv;
 }
 
-bool sensor_report_reading_data(const char* url, const reading_data* data) {
+bool sensor_report_reading_data(const char* url, const ReadingData* data) {
     char *buf;
     int str_length;
     StringBuffer request;
     StringBuffer *response;
     bool rv;
 
-    str_length = asprintf(&buf, SENSOR_READING_JSON_FORMAT, data->reading_value, data->reading_time);
+    str_length = asprintf(&buf, SENSOR_READING_JSON_FORMAT, data->reading_value, (unsigned int)data->reading_time);
     if (str_length < 0)
         return false;
 

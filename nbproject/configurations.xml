@@ -69,7 +69,7 @@
       <itemPath>time_functions.c</itemPath>
       <itemPath>url_loader.c</itemPath>
     </logicalFolder>
-    <logicalFolder name="f5" displayName="Valves" projectFiles="true" kind="ROOT">
+    <logicalFolder name="f5" displayName="Valves" projectFiles="true">
       <itemPath>Irrigation.c</itemPath>
       <itemPath>Irrigation.h</itemPath>
       <itemPath>valf.c</itemPath>
@@ -177,6 +177,10 @@
           <incDir>
             <pElem>.</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+          <warningLevel>2</warningLevel>
         </cTool>
         <ccTool>
           <incDir>

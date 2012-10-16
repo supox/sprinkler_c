@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
     int i;
     init();
 
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 1; i++) {
         do_sprinkler_tasks();
         sleep_some_time();
     }
